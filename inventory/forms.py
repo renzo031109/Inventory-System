@@ -14,11 +14,11 @@ class ItemForm(forms.ModelForm):
             
         }
 
-        # widgets = {
-        #     'item': forms.Select(attrs={'id':'item'}),
-        #     'quantity': forms.TextInput(attrs={'id':'quantity'})
+        widgets = {
+            'item': forms.Select(attrs={'id':'item'}),
+            'quantity': forms.TextInput(attrs={'id':'quantity'})
             
-        # }
+        }
  
         item = forms.ModelChoiceField(
                 queryset=ItemName.objects.all(),

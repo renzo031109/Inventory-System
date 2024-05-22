@@ -9,12 +9,11 @@ MyHOME
 
 <h1>Data List</h1>
 
-<!-- <table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover">
     <thead>
       <tr>
         <th scope="col">Item Description</th>
         <th scope="col">Brand</th>
-        <th scope="col">UOM</th>
         <th scope="col">Stocks</th>
         <th scope="col">Date</th>
         <th scope="col"></th>
@@ -26,8 +25,7 @@ MyHOME
       {% for item in items %}
       <tr>
         <td>{{ item.item }}</td>
-        <td>{{ item.brand_name }}</td>
-        <td>{{ item.uom }}</td>
+        <td>{{ item.item.brand_name }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.date_added }}</td>
         <td>
@@ -48,7 +46,7 @@ MyHOME
       {% endfor %}
 
     </tbody>
-  </table> -->
+  </table>
 
 
 {% endblock content %}
