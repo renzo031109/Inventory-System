@@ -26,4 +26,9 @@ def delete_item(request, id):
         item = Item.objects.get(id=id)
         item.delete()
     return redirect('home')
+
+def summary_item(request):
+    items = Item.objects.all()
+    context = {'items': items}
+    return render(request, 'inventory/summary.html', context)
     
