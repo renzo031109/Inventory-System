@@ -17,8 +17,9 @@ MyHOME
         <th scope="col">Brand</th>
         <th scope="col">Stocks</th>
         <th scope="col">Date</th>
+        <th scope="col">Remarks</th>
         <th scope="col"></th>
-        {% comment %} <th scope="col"></th> {% endcomment %}
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -29,20 +30,20 @@ MyHOME
         <td>{{ item.item.brand_name }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.date_added }}</td>
+        <td>{{ item.remarks }}</td>
         <td>
           <center>
           <button class="update-btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-          <button type="submit" class="delete-btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
           </center>
         </td>
-        {% comment %} <td>
+       <td>
           <center>
-          <form action="{% url 'delete_item' item.id %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="delete-btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
-          </form>  
+            <form action="{% url 'delete_item' item.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="delete-btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+            </form> 
           </center>
-        </td> {% endcomment %}
+        </td>
       </tr>
       {% endfor %}
 
