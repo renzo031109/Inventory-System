@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Item, Item_SOH
-from .forms import ItemFormGet, ItemFormAdd
+from .models import Item, Item_SOH, ItemName
+from .forms import ItemFormGet, ItemFormAdd, ItemNameForm
 
 @login_required
 def home(request):
@@ -14,7 +14,7 @@ def add_item(request):
     
     if request.method == 'POST':
         form = ItemFormAdd(request.POST)
-        if form.is_valid():
+        if form.is_valid(): 
             #get the item name from the form
             add_item = request.POST.get('item')
             #get the item qty from the form
@@ -54,7 +54,6 @@ def summary_item(request):
 
 def get_item(request):
     
-
     if request.method == 'POST':
         form = ItemFormGet(request.POST)    
         if form.is_valid():
@@ -80,4 +79,36 @@ def get_item(request):
     context = {'form':form}
     return render(request,'inventory/get_item.html', context)
 
-    
+
+def new_item(request):
+    if request.method == 'POST':
+        form = ItemNameForm(request.POST)
+        if form.is_valid():
+            form_item_name = request.POST.get('item_name')
+            form_item_brand = request.POST.get('brand_name')
+
+            try:
+                record_name = ItemName.objects.get(item_name=str(form_item_name))
+
+                if record_name.brand_name == form_item_brand:
+                    print("not saving!!!")
+                
+                
+
+            except:
+                # record_name = None
+
+                print(form_item_name)
+                print(form_item_brand)
+                print(record_name)
+
+
+            # form.save()
+            return redirect('home')
+    else:
+        form = ItemNameForm()
+
+    context = {'form': form}
+    return render(request, 'inventory/new_item.html', context)
+
+

@@ -18,8 +18,8 @@ class ItemFormAdd(forms.ModelForm):
         }
 
         widgets = {
-            'item': forms.Select(attrs={'id':'item'}),
-            'quantity': forms.TextInput(attrs={'id':'quantity'}),
+            'item': forms.Select(attrs={'class':'item'}),
+            'quantity': forms.TextInput(attrs={'class':'quantity'}),
             'remarks': forms.TextInput(attrs={'value': 'IN', 'type':'hidden'})           
         }
  
@@ -47,8 +47,8 @@ class ItemFormGet(forms.ModelForm):
         }
 
         widgets = {
-            'item': forms.Select(attrs={'id':'item'}),
-            'quantity': forms.TextInput(attrs={'id':'quantity'}),
+            'item': forms.Select(attrs={'class':'item'}),
+            'quantity': forms.TextInput(attrs={'class':'quantity'}),
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'})           
         }
  
@@ -59,7 +59,13 @@ class ItemFormGet(forms.ModelForm):
                 widget=forms.Select(attrs={'class': 'form-control'})
             )
         
-
-
+class ItemNameForm(forms.ModelForm):
+    class Meta:
+        model = ItemName
+        fields = ['item_name','brand_name']
+        widgets = {
+            'item_name': forms.TextInput(attrs={'class':'item'}),
+            'brand_name': forms.TextInput(attrs={'class':'brand_name'}),
+        }
 
     
