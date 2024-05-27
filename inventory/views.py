@@ -38,6 +38,11 @@ def add_item(request):
 def delete_item(request, id):
     if request.method == 'POST':
         item = Item.objects.get(id=id)
+        item_soh = Item_SOH.objects.get(item=item.item)
+
+        updated_soh = int(item_soh.soh) + int(item.quantity)
+        item_soh.soh = updated_soh
+        item_soh.save()
         item.delete()
     return redirect('home')
 
@@ -48,10 +53,10 @@ def summary_item(request):
 
 
 def get_item(request):
+    
 
     if request.method == 'POST':
-        form = ItemFormGet(request.POST)
-        
+        form = ItemFormGet(request.POST)    
         if form.is_valid():
             #get the item name from the form
             pick_item = request.POST.get('item')
