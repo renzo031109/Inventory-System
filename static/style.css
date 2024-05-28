@@ -3,3 +3,7 @@
    white-space: nowrap;
    width: 1%;
 }
+
+btn-message-alert{
+   float: right
+}
