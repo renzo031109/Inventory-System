@@ -14,7 +14,7 @@ Summary
     <thead>
       <tr>
         <th scope="col">Item Description</th>
-        <th scope="col">Brand</th>
+        <th scope="col">Brand Name</th>
         <th scope="col">SOH</th>
       </tr>
     </thead>
@@ -22,8 +22,8 @@ Summary
 
       {% for item in items %}
       <tr>
-        <td>{{ item.item }}</td>
-        <td>{{ item.item.brand_name }}</td>
+        <td>{{ item.item_name }}</td>
+        <td>{{ item.brand_name }}</td>
         <td>{{ item.soh }}</td>
       </tr>
       {% endfor %}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Item, ItemName
+from .models import Item, ItemDetails
 
 class ItemFormAdd(forms.ModelForm):
     class Meta:
@@ -24,7 +24,7 @@ class ItemFormAdd(forms.ModelForm):
         }
  
         item = forms.ModelChoiceField(
-                queryset=ItemName.objects.all(),
+                queryset=ItemDetails.objects.all(),
                 to_field_name='item',
                 required=True,  
                 widget=forms.Select(attrs={'class': 'form-control'})
@@ -53,7 +53,7 @@ class ItemFormGet(forms.ModelForm):
         }
  
         item = forms.ModelChoiceField(
-                queryset=ItemName.objects.all(),
+                queryset=ItemDetails.objects.all(),
                 to_field_name='item',
                 required=True,  
                 widget=forms.Select(attrs={'class': 'form-control'})
@@ -61,11 +61,17 @@ class ItemFormGet(forms.ModelForm):
         
 class ItemNameForm(forms.ModelForm):
     class Meta:
-        model = ItemName
-        fields = ['item_name','brand_name']
+        model = ItemDetails
+        fields = ['item_name','brand_name','soh']
+        labels = {
+            'item_name': 'Item Name',
+            'brand_name': 'Brand Name',
+            'soh': 'Beginning Balance'
+        }
         widgets = {
             'item_name': forms.TextInput(attrs={'class':'item'}),
             'brand_name': forms.TextInput(attrs={'class':'brand_name'}),
+            'soh': forms.TextInput(attrs={'class':'beginning_balance'}),
         }
 
     

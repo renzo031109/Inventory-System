@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Item, Item_SOH, ItemName
+from .models import Item, ItemDetails
 from .forms import ItemFormGet, ItemFormAdd, ItemNameForm
 
 
@@ -23,8 +23,9 @@ def add_item(request):
             #get the item qty from the form
             add_qty = request.POST.get('quantity')
             #get the item SOH from model table
+
             try:
-                item_soh = Item_SOH.objects.get(item=add_item)
+                item_soh = ItemDetails.objects.get(item=add_item)
                 #compute add soh
                 soh = int(item_soh.soh) + int(add_qty)
                 #get the updated soh after add
@@ -48,7 +49,7 @@ def add_item(request):
 def delete_item(request, id):
     if request.method == 'POST':
         item = Item.objects.get(id=id)
-        item_soh = Item_SOH.objects.get(item=item.item)
+        item_soh = ItemDetails.objects.get(item_name=item.item)
 
         updated_soh = int(item_soh.soh) + int(item.quantity)
         item_soh.soh = updated_soh
@@ -57,7 +58,7 @@ def delete_item(request, id):
     return redirect('home')
 
 def summary_item(request):
-    items = Item_SOH.objects.all()
+    items = ItemDetails.objects.all()
     context = {'items': items}
     return render(request, 'inventory/summary.html', context)
 
@@ -72,11 +73,14 @@ def get_item(request):
             #get the item qty from the form
             pick_qty = request.POST.get('quantity')
             #get the item SOH from model table
-            item_soh = Item_SOH.objects.get(item=pick_item)
+            item_soh = ItemDetails.objects.get(item=pick_item)
+            print(pick_item)
+            print(pick_qty)
+            print(item_soh)
 
             if int(item_soh.soh) < int(pick_qty):
                 print("out of stock")
-                messages.error(request, f"Sorry, Your available stock for {item_soh.item} is {item_soh.soh} only")
+                messages.error(request, f"Sorry, Your available stock for {item_soh.item_name} is {item_soh.soh} only")
             else:
                 #minus get item to soh
                 new_soh = int(item_soh.soh) - int(pick_qty)
@@ -104,7 +108,7 @@ def new_item(request):
                      
             #using try-except method in case of null value
             try:
-                record_name = ItemName.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
+                record_name = ItemDetails.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
 
                 for record in record_name:
                     if record.item_name == form_item_name and record.brand_name == form_item_brand:
@@ -114,12 +118,10 @@ def new_item(request):
             except:
                 record_name = None
 
-        
-
             # item_soh.save()
             form.save()
             messages.success(request, "New Item added successfully!")
-            return redirect('home')
+            return redirect('summary_item')
     else:
         form = ItemNameForm()
 
