@@ -18,17 +18,17 @@ class ItemFormAdd(forms.ModelForm):
         }
 
         widgets = {
-            'item': forms.Select(attrs={'class':'item'}),
+            'item': forms.Select(attrs={'id':'select-item'}),
             'quantity': forms.TextInput(attrs={'class':'quantity'}),
             'remarks': forms.TextInput(attrs={'value': 'IN', 'type':'hidden'})           
         }
  
-        item = forms.ModelChoiceField(
-                queryset=ItemDetails.objects.all(),
-                to_field_name='item',
-                required=True,  
-                widget=forms.Select(attrs={'class': 'form-control'})
-            )
+        # item = forms.ModelChoiceField(
+        #         queryset=ItemDetails.objects.all(),
+        #         to_field_name='item',
+        #         required=True,  
+        #         widget=forms.Select(attrs={'class': 'form-control'})
+        #     )
         
 class ItemFormGet(forms.ModelForm):
     class Meta:
@@ -47,17 +47,17 @@ class ItemFormGet(forms.ModelForm):
         }
 
         widgets = {
-            'item': forms.Select(attrs={'class':'item'}),
+            'item': forms.Select(attrs={'class':'select-item'}),
             'quantity': forms.TextInput(attrs={'class':'quantity'}),
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'})           
         }
  
-        item = forms.ModelChoiceField(
-                queryset=ItemDetails.objects.all(),
-                to_field_name='item',
-                required=True,  
-                widget=forms.Select(attrs={'class': 'form-control'})
-            )
+        # item = forms.ModelChoiceField(
+        #         queryset=ItemDetails.objects.all(),
+        #         to_field_name='item',
+        #         required=True,  
+        #         widget=forms.Select(attrs={'class': 'form-control'})
+        #     )
         
 class ItemNameForm(forms.ModelForm):
     class Meta:

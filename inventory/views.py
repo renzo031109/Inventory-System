@@ -25,7 +25,8 @@ def add_item(request):
             #get the item SOH from model table
 
             try:
-                item_soh = ItemDetails.objects.get(item=add_item)
+                item_soh = ItemDetails.objects.get(id=add_item)
+                print(item_soh)
                 #compute add soh
                 soh = int(item_soh.soh) + int(add_qty)
                 #get the updated soh after add
@@ -73,14 +74,11 @@ def get_item(request):
             #get the item qty from the form
             pick_qty = request.POST.get('quantity')
             #get the item SOH from model table
-            item_soh = ItemDetails.objects.get(item=pick_item)
-            print(pick_item)
-            print(pick_qty)
-            print(item_soh)
+            item_soh = ItemDetails.objects.get(id=pick_item)
 
             if int(item_soh.soh) < int(pick_qty):
                 print("out of stock")
-                messages.error(request, f"Sorry, Your available stock for {item_soh.item_name} is {item_soh.soh} only")
+                messages.error(request, f"Sorry, Your available stock for {item_soh.item_name} is only {item_soh.soh}")
             else:
                 #minus get item to soh
                 new_soh = int(item_soh.soh) - int(pick_qty)

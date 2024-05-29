@@ -18,10 +18,11 @@ class Item(models.Model):
     item = models.ForeignKey(ItemDetails, null=True, on_delete=models.CASCADE)
     quantity = models.IntegerField() 
     remarks = models.CharField(max_length=50, null=True)
-    date_added = models.DateField(auto_now_add=True)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = 'Item'
+        ordering = ["-date_added"]
 
     def __str__(self):
         return str(self.item)
