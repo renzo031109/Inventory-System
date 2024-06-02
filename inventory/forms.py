@@ -1,34 +1,30 @@
 from django import forms
+from django.forms import (modelformset_factory)
 from .models import Item, ItemDetails
 
-class ItemFormAdd(forms.ModelForm):
-    class Meta:
-        model = Item
+
+# class ItemFormAdd(forms.ModelForm):
+#     class Meta:
+#         model = Item
         
-        fields = [
-            'item',
-            'quantity',
-            'remarks'
-        ]
+#         fields = [
+#             'item',
+#             'quantity',
+#             'remarks'
+#         ]
 
-        labels = {
-            'item': 'Item Description',
-            'quantity':'Quantity',
-            'remarks':'remarks',
-        }
+#         labels = {
+#             'item': 'Item Description',
+#             'quantity':'Quantity',
+#             'remarks':'remarks',
+#         }
 
-        widgets = {
-            'item': forms.Select(attrs={'id':'select-item'}),
-            'quantity': forms.TextInput(attrs={'class':'quantity'}),
-            'remarks': forms.TextInput(attrs={'value': 'IN', 'type':'hidden'})           
-        }
+#         widgets = {
+#             'item': forms.Select(attrs={'id':'select-item'}),
+#             'quantity': forms.TextInput(attrs={'class':'quantity'}),
+#             'remarks': forms.TextInput(attrs={'value': 'IN', 'type':'hidden'})           
+#         }
  
-        # item = forms.ModelChoiceField(
-        #         queryset=ItemDetails.objects.all(),
-        #         to_field_name='item',
-        #         required=True,  
-        #         widget=forms.Select(attrs={'class': 'form-control'})
-        #     )
         
 class ItemFormGet(forms.ModelForm):
     class Meta:
@@ -52,12 +48,7 @@ class ItemFormGet(forms.ModelForm):
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'})           
         }
  
-        # item = forms.ModelChoiceField(
-        #         queryset=ItemDetails.objects.all(),
-        #         to_field_name='item',
-        #         required=True,  
-        #         widget=forms.Select(attrs={'class': 'form-control'})
-        #     )
+
         
 class ItemNameForm(forms.ModelForm):
     class Meta:
@@ -74,4 +65,22 @@ class ItemNameForm(forms.ModelForm):
             'soh': forms.TextInput(attrs={'class':'beginning_balance'}),
         }
 
-    
+
+ItemModelFormSet = modelformset_factory(
+    Item,
+    fields=('item','quantity','remarks'),
+    extra=1,
+    widgets={
+        'item': forms.Select(attrs={
+            'id':'select-item',
+            'placeholder': 'Item'
+            }),
+        'quantity': forms.TextInput(attrs={
+            'class':'quantity',
+            'placeholder': 'Item'
+            }),
+        'remarks': forms.TextInput(attrs={
+            'value': 'IN'
+            })
+    }
+)

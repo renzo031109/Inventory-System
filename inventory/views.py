@@ -1,8 +1,12 @@
+from typing import Any
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Item, ItemDetails
-from .forms import ItemFormGet, ItemFormAdd, ItemNameForm
+from .forms import ItemFormGet,  ItemNameForm, ItemModelFormSet
+from django.views.generic.edit import CreateView, UpdateView
 
 
 @login_required
@@ -12,38 +16,38 @@ def home(request):
     return render(request,'inventory/home.html', context)
 
 
-@login_required
-def add_item(request):
+# @login_required
+# def add_item(request):
     
-    if request.method == 'POST':
-        form = ItemFormAdd(request.POST)
-        if form.is_valid(): 
-            #get the item name from the form
-            add_item = request.POST.get('item')
-            #get the item qty from the form
-            add_qty = request.POST.get('quantity')
-            #get the item SOH from model table
+#     if request.method == 'POST':
+#         form = ItemFormAdd(request.POST)
+#         if form.is_valid(): 
+#             #get the item name from the form
+#             add_item = request.POST.get('item')
+#             #get the item qty from the form
+#             add_qty = request.POST.get('quantity')
+#             #get the item SOH from model table
 
-            try:
-                item_soh = ItemDetails.objects.get(id=add_item)
-                print(item_soh)
-                #compute add soh
-                soh = int(item_soh.soh) + int(add_qty)
-                #get the updated soh after add
-                item_soh.soh = int(soh)
-                #save tables
-                item_soh.save()
-            except:
-                item_soh = 0
-                soh = int(item_soh) + int(add_qty)
+#             try:
+#                 item_soh = ItemDetails.objects.get(id=add_item)
+#                 print(item_soh)
+#                 #compute add soh
+#                 soh = int(item_soh.soh) + int(add_qty)
+#                 #get the updated soh after add
+#                 item_soh.soh = int(soh)
+#                 #save tables
+#                 item_soh.save()
+#             except:
+#                 item_soh = 0
+#                 soh = int(item_soh) + int(add_qty)
             
-            form.save()
-            messages.success(request, "You added stock successfully!")
-            return redirect('home')
-    else:
-        form = ItemFormAdd()
-    context = {'form': form}
-    return render(request, 'inventory/add_item.html', context)
+#             form.save()
+#             messages.success(request, "You added stock successfully!")
+#             return redirect('home')
+#     else:
+#         form = ItemFormAdd()
+#     context = {'form': form}
+#     return render(request, 'inventory/add_item.html', context)
 
 
 @login_required
@@ -127,3 +131,23 @@ def new_item(request):
     return render(request, 'inventory/new_item.html', context)
 
 
+def add_item(request):
+
+    if request.method == 'GET':
+        formset = ItemModelFormSet(queryset=Item.objects.none())
+
+    elif request.method == 'POST':
+        formset = ItemModelFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                for k,v in form.cleaned_data.items():
+                    print(k,v)
+                # # only save if name is present
+                # if form.cleaned_data.get('item') and form.cleaned_data.get('quantity'):
+                #     form.save()
+
+                return redirect('home')
+
+        
+    context = {'formset': formset}
+    return render(request, 'inventory/add_item.html', context)
