@@ -7,6 +7,7 @@ class ItemDetails(models.Model):
     soh = models.IntegerField(null=True)
 
     class Meta:
+        db_table = 'item'
         verbose_name_plural = 'Item Name'
         ordering = ["item_name"]
 

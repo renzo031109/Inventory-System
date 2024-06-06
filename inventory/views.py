@@ -6,10 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Item, ItemDetails
 from .forms import ItemFormGet,  ItemNameForm, ItemModelFormSet
-from django.views.generic.edit import CreateView, UpdateView
 
 
-@login_required
+
+# @login_required
 def home(request):
     items = Item.objects.all()
     context = {'items': items}
@@ -50,7 +50,7 @@ def home(request):
 #     return render(request, 'inventory/add_item.html', context)
 
 
-@login_required
+# @login_required
 def delete_item(request, id):
     if request.method == 'POST':
         item = Item.objects.get(id=id)
@@ -131,23 +131,45 @@ def new_item(request):
     return render(request, 'inventory/new_item.html', context)
 
 
-def add_item(request):
+# def add_item(request):
 
-    if request.method == 'GET':
-        formset = ItemModelFormSet(queryset=Item.objects.none())
+#     if request.method == 'GET':
+#         formset = ItemModelFormSet(queryset=Item.objects.none())
 
-    elif request.method == 'POST':
-        formset = ItemModelFormSet(request.POST)
-        if formset.is_valid():
-            for form in formset:
-                for k,v in form.cleaned_data.items():
-                    print(k,v)
-                # # only save if name is present
-                # if form.cleaned_data.get('item') and form.cleaned_data.get('quantity'):
-                #     form.save()
+#     elif request.method == 'POST':
+#         formset = ItemModelFormSet(request.POST)
+#         if formset.is_valid():
+#             for form in formset:
+#                 for k,v in form.cleaned_data.items():
+#                     print(k,v)
+#                 # only save if name is present
+#                     if form.cleaned_data.get('item'):
+#                         form.save()
 
-                return redirect('home')
-
+#                 return redirect('home')
         
-    context = {'formset': formset}
-    return render(request, 'inventory/add_item.html', context)
+#     context = {'formset': formset}
+#     return render(request, 'inventory/add_item.html', context)
+
+from django.views.generic import ListView, TemplateView
+from .forms import BirdFormSet
+from django.urls import reverse_lazy
+
+class BirdAddView(TemplateView):
+    template_name = "inventory/add_item.html"
+
+    def get(self, *args, **kwargs):
+        formset = BirdFormSet(queryset=Item.objects.none())
+        return self.render_to_response({'formset': formset})
+
+    # Define method to handle POST request
+    def post(self, *args, **kwargs):
+
+        formset = BirdFormSet(data=self.request.POST)
+
+        # Check if submitted forms are valid
+        if formset.is_valid():
+            formset.save()
+            return redirect(reverse_lazy("home"))
+
+        return self.render_to_response({'formset': formset})

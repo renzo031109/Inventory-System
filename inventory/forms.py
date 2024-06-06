@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import (modelformset_factory)
+from django.forms import modelformset_factory
 from .models import Item, ItemDetails
 
 
@@ -67,20 +67,32 @@ class ItemNameForm(forms.ModelForm):
 
 
 ItemModelFormSet = modelformset_factory(
-    Item,
+    Item, 
     fields=('item','quantity','remarks'),
     extra=1,
     widgets={
         'item': forms.Select(attrs={
-            'id':'select-item',
+            'class':'form-control',
             'placeholder': 'Item'
             }),
         'quantity': forms.TextInput(attrs={
-            'class':'quantity',
+            'class':'form-control',
             'placeholder': 'Item'
             }),
         'remarks': forms.TextInput(attrs={
             'value': 'IN'
             })
     }
+)
+
+
+from django.forms import ModelForm
+
+class BirdForm(ModelForm):
+    class Meta:
+      model = Item
+      fields = ["item", "quantity", "remarks"]
+
+BirdFormSet = modelformset_factory(
+    Item, fields=("item", "quantity", "remarks"), extra=1
 )
