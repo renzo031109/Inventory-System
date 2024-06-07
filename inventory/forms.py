@@ -88,11 +88,11 @@ ItemModelFormSet = modelformset_factory(
 
 from django.forms import ModelForm
 
-class BirdForm(ModelForm):
+class ItemFormAdd(ModelForm):
     class Meta:
       model = Item
       fields = ["item", "quantity", "remarks"]
 
-BirdFormSet = modelformset_factory(
+ItemFormSet = modelformset_factory(
     Item, fields=("item", "quantity", "remarks"), extra=1
 )

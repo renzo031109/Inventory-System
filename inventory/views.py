@@ -52,6 +52,7 @@ def home(request):
 
 # @login_required
 def delete_item(request, id):
+    print(request)
     if request.method == 'POST':
         item = Item.objects.get(id=id)
         item_soh = ItemDetails.objects.get(item_name=item.item)
@@ -152,24 +153,24 @@ def new_item(request):
 #     return render(request, 'inventory/add_item.html', context)
 
 from django.views.generic import ListView, TemplateView
-from .forms import BirdFormSet
+from .forms import ItemFormSet
 from django.urls import reverse_lazy
 
-class BirdAddView(TemplateView):
+class ItemAddView(TemplateView):
     template_name = "inventory/add_item.html"
 
     def get(self, *args, **kwargs):
-        formset = BirdFormSet(queryset=Item.objects.none())
-        return self.render_to_response({'formset': formset})
+        formset = ItemFormSet(queryset=Item.objects.none())
+        return self.render_to_response({'itemformset': formset})
 
     # Define method to handle POST request
     def post(self, *args, **kwargs):
 
-        formset = BirdFormSet(data=self.request.POST)
+        formset = ItemFormSet(data=self.request.POST)
 
         # Check if submitted forms are valid
         if formset.is_valid():
             formset.save()
             return redirect(reverse_lazy("home"))
 
-        return self.render_to_response({'formset': formset})
+        return self.render_to_response({'itemformset': formset})
