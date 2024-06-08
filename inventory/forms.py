@@ -86,13 +86,36 @@ ItemModelFormSet = modelformset_factory(
 )
 
 
-from django.forms import ModelForm
+# from django.forms import ModelForm
 
-class ItemFormAdd(ModelForm):
-    class Meta:
-      model = Item
-      fields = ["item", "quantity", "remarks"]
+# class ItemFormAdd(ModelForm):
+#     class Meta:
+#       model = Item
+#       fields = ["item", "quantity", "remarks"]
 
-ItemFormSet = modelformset_factory(
-    Item, fields=("item", "quantity", "remarks"), extra=1
+# ItemFormSet = modelformset_factory(
+#     Item, fields=("item", "quantity", "remarks"), extra=1
+# )
+
+ItemModelFormset = modelformset_factory(
+    Item,
+    fields=('item','quantity','remarks' ),
+    extra=1,
+    widgets={
+        'item': forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter Item Name here'
+            }
+        ), 
+        'quantity': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter quantity here'
+                }
+        ),
+        'remarks': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'enter remarks'
+                }
+        )
+    }
 )

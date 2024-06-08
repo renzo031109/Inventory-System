@@ -1,78 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}
-  Add Item(s)
-{% endblock title %}
+{% load static %}
 
 {% block content %}
 
-<div class="container mt-5"></div>
-<h1>Add item</h1>
-
-<form class="form-container" method="POST">
-{% csrf_token %}
-{{ itemformset.management_form }}
-{% for form in itemformset %}
-
-<div class="card">
-    <div class="card-body">
-
- 
+<form class="form-horizontal" method="POST" action="">
+    {% csrf_token %}
+{{ formset.management_form }}
+{% for form in formset %}
 <div class="row form-row spacer">
     <div class="col-2">
         <label>{{form.name.label}}</label>
     </div>
     <div class="col-4">
-        <div class="input-group item-form">
-            {{ form.as_p }}
-            <div class="input-group-append"> 
-                <button id="add-form" type="button" class="btn btn-success" >+</button>
+        <div class="input-group">
+            {{ form }}
+            <div class="input-group-append">
+                <button type="button" class="btn btn-success add-form-row">+</button>
             </div>
         </div>
-    </div>  
-</div> 
-
+    </div>
 </div>
-</div>
-
 {% endfor %}
-
 <div class="row spacer">
     <div class="col-4 offset-2">
         <button type="submit" class="btn btn-block btn-primary">Create</button>
     </div>
 </div>
 </form>
+
+
+
+<!-- Jquery Tag -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- src scripts -->
+<script src="{% static 'formset_scripts.js' %}"></script>
+
 {% endblock %}
 
-{% block custom_js %}
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script type="text/javascript">
-    let birdForm = document.querySelectorAll(".item-form")
-    let container = document.querySelector("#form-container")
-    let addButton = document.querySelector("#add-form")
-    let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
 
 
 
-    let formNum = birdForm.length-1
-    addButton.addEventListener('click', addForm)
-
-    function addForm(e){
-        e.preventDefault()
-
-        alert("hellow")
-        let newForm = birdForm[0].cloneNode(true)
-        let formRegex = RegExp(`form-(\\d){1}-`,'g')
-
-        formNum++
-        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
-        container.insertBefore(newForm, addButton)
-        
-        totalForms.setAttribute('value', `${formNum+1}`)
-    }
-</script>
-{% endblock %}
 
 
 
