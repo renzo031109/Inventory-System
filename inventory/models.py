@@ -18,7 +18,7 @@ class ItemDetails(models.Model):
 class Item(models.Model):
     item = models.ForeignKey(ItemDetails, null=True, on_delete=models.CASCADE)
     quantity = models.IntegerField() 
-    remarks = models.CharField(max_length=50, null=True)
+    remarks = models.CharField(max_length=50, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:

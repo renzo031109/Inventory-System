@@ -68,7 +68,7 @@ class ItemNameForm(forms.ModelForm):
 
 ItemModelFormSet = modelformset_factory(
     Item, 
-    fields=('item','quantity','remarks'),
+    fields=('item','quantity'),
     extra=1,
     widgets={
         'item': forms.Select(attrs={
@@ -78,9 +78,6 @@ ItemModelFormSet = modelformset_factory(
         'quantity': forms.TextInput(attrs={
             'class':'form-control',
             'placeholder': 'Item'
-            }),
-        'remarks': forms.TextInput(attrs={
-            'value': 'IN'
             })
     }
 )
@@ -97,25 +94,25 @@ ItemModelFormSet = modelformset_factory(
 #     Item, fields=("item", "quantity", "remarks"), extra=1
 # )
 
-ItemModelFormset = modelformset_factory(
-    Item,
-    fields=('item','quantity','remarks' ),
-    extra=1,
-    widgets={
-        'item': forms.Select(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter Item Name here'
-            }
-        ), 
-        'quantity': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter quantity here'
-                }
-        ),
-        'remarks': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'enter remarks'
-                }
-        )
-    }
-)
+# ItemModelFormset = modelformset_factory(
+#     Item,
+#     fields=('item','quantity','remarks' ),
+#     extra=1,
+#     widgets={
+#         'item': forms.Select(attrs={
+#             'class': 'form-control',
+#             'placeholder': 'Enter Item Name here'
+#             }
+#         ), 
+#         'quantity': forms.TextInput(attrs={
+#                 'class': 'form-control',
+#                 'placeholder': 'Enter quantity here'
+#                 }
+#         ),
+#         'remarks': forms.TextInput(attrs={
+#                 'class': 'form-control',
+#                 'placeholder': 'enter remarks'
+#                 }
+#         )
+#     }
+# )

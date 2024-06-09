@@ -52,7 +52,6 @@ def home(request):
 
 # @login_required
 def delete_item(request, id):
-    print(request)
     if request.method == 'POST':
         item = Item.objects.get(id=id)
         item_soh = ItemDetails.objects.get(item_name=item.item)
@@ -141,11 +140,18 @@ def create_item_model_form(request):
         formset = ItemModelFormSet(request.POST)
         if formset.is_valid():
             for form in formset:
+                #this is jusst for checking of form submitted
                 for a,b in form.cleaned_data.items():
                     print(a,b)
+                
                 # only save if name is present
-                if form.cleaned_data.get('item'):
-                    form.save()
+                print(form.cleaned_data.get('item'))
+                print(form.cleaned_data.get('quantity'))
+                if form.cleaned_data.get('item'):  
+                    #assign default value to remarks 
+                    itemAddForm = form.save(commit=False)    
+                    itemAddForm.remarks = "IN"
+                    itemAddForm.save()
             return redirect('home')
 
     return render(request, template_name, {

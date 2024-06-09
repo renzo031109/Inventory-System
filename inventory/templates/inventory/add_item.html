@@ -1,48 +1,59 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% load static %}
+
+{% block title %}
+  Add Item(s)
+{% endblock title %}
+
 
 {% block content %}
 
+<div class="container mt-5">
+
+
 <form class="form-horizontal" method="POST" action="">
-    {% csrf_token %}
+{% csrf_token %}
 {{ formset.management_form }}
-{% for form in formset %}
-<div class="row form-row spacer">
-    <div class="col-2">
-        <label>{{form.name.label}}</label>
-    </div>
-    <div class="col-4">
-        <div class="input-group">
-            {{ form }}
-            <div class="input-group-append">
-                <button type="button" class="btn btn-success add-form-row">+</button>
-            </div>
-        </div>
-    </div>
+
+<div class="row">
+    <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th colspan="4"><center><h3>ADD ITEM FORM</h3></center></th>
+          </tr> 
+          <tr>
+            {% for form in formset %}
+                {% for field in form.visible_fields %}
+                <th scope="col" style="width:auto !important">{{ field.label | capfirst }}</th>
+                {% endfor %}
+            {% endfor %}
+              <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody class="form-row spacer">
+            {% for form in formset %}
+            <tr> 
+            
+              <td>{{ form.item }}</td>
+              <td>{{ form.quantity }}</td>
+              
+              <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>
+              
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-{% endfor %}
-<div class="row spacer">
-    <div class="col-4 offset-2">
-        <button type="submit" class="btn btn-block btn-primary">Create</button>
-    </div>
+
+<div class="container text-center">
+        <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
 </div>
 </form>
+</div>
 
-
-
-<!-- Jquery Tag -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<!-- src scripts -->
-<script src="{% static 'formset_scripts.js' %}"></script>
+{% include 'inventory/formscript.html' %}
 
 {% endblock %}
-
-
-
-
-
-
 
 
