@@ -23,11 +23,9 @@
             <th colspan="4"><center><h3>ADD ITEM FORM</h3></center></th>
           </tr> 
           <tr>
-            {% for form in formset %}
-                {% for field in form.visible_fields %}
-                <th scope="col" style="width:auto !important">{{ field.label | capfirst }}</th>
-                {% endfor %}
-            {% endfor %}
+      
+              <th scope="col" style="width:70%">Item Name</th>
+              <th scope="col" style="width:30%">Quantity</th>
               <th scope="col"></th>
           </tr>
         </thead>

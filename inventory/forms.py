@@ -77,7 +77,7 @@ ItemModelFormSet = modelformset_factory(
             }),
         'quantity': forms.TextInput(attrs={
             'class':'form-control',
-            'placeholder': 'Item'
+            'placeholder': '0'
             })
     }
 )

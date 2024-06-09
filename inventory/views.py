@@ -131,7 +131,7 @@ def new_item(request):
     return render(request, 'inventory/new_item.html', context)
 
 
-def create_item_model_form(request):
+def add_item(request):
     template_name = 'inventory/add_item.html'
 
     if request.method == 'GET':
@@ -140,9 +140,9 @@ def create_item_model_form(request):
         formset = ItemModelFormSet(request.POST)
         if formset.is_valid():
             for form in formset:
-                #this is jusst for checking of form submitted
-                for a,b in form.cleaned_data.items():
-                    print(a,b)
+                # #this is just for checking of form submitted
+                # for a,b in form.cleaned_data.items():
+                #     print(a,b)
                 
                 # only save if name is present
                 print(form.cleaned_data.get('item'))
@@ -151,8 +151,34 @@ def create_item_model_form(request):
                     #assign default value to remarks 
                     itemAddForm = form.save(commit=False)    
                     itemAddForm.remarks = "IN"
+
+                    #get the item name from the form
+                    add_item = form.cleaned_data.get('item')
+                    #get the item qty from the form
+                    add_qty = form.cleaned_data.get('quantity')
+                    #get the item SOH from model table
+
+                    item_soh = ItemDetails.objects.get(item_name=add_item)
+                    print(item_soh)
+
+                    try:
+                        item_soh = ItemDetails.objects.get(item_name=add_item)
+                        print(item_soh)
+                        #compute add soh
+                        soh = int(item_soh.soh) + int(add_qty)
+                        #get the updated soh after add
+                        item_soh.soh = int(soh)
+                        #save tables
+                        item_soh.save()
+                    except:
+                        item_soh = 0
+                        soh = int(item_soh) + int(add_qty)
+
                     itemAddForm.save()
+            messages.success(request, "You added stock successfully!")
             return redirect('home')
+        else:
+            messages.error(request, "Invalid Input!")
 
     return render(request, template_name, {
         'formset': formset
