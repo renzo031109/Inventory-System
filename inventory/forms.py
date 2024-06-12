@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import modelformset_factory
-from .models import Item, ItemDetails
+from .models import Item, ItemBase
 
 
 # class ItemFormAdd(forms.ModelForm):
@@ -31,47 +31,50 @@ class ItemFormGet(forms.ModelForm):
         model = Item
         
         fields = [
-            'item',
+            'item_name',
             'quantity',
             'remarks'
         ]
 
         labels = {
-            'item': 'Item Description',
+            'item_name': 'Item Description',
             'quantity':'Quantity',
             'remarks':'remarks',
         }
 
         widgets = {
-            'item': forms.Select(attrs={'class':'select-item'}),
+            'item_name': forms.Select(attrs={'class':'select-item'}),
             'quantity': forms.TextInput(attrs={'class':'quantity'}),
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'})           
         }
  
 
         
-class ItemNameForm(forms.ModelForm):
+class ItemNewForm(forms.ModelForm):
     class Meta:
-        model = ItemDetails
-        fields = ['item_name','brand_name','soh']
+        model = Item
+        fields = ['item_name','brand_name','price','soh']
         labels = {
             'item_name': 'Item Name',
             'brand_name': 'Brand Name',
-            'soh': 'Beginning Balance'
+            'price': 'Price',
+            'soh': 'Beginning Balance',
+
         }
         widgets = {
-            'item_name': forms.TextInput(attrs={'class':'item'}),
-            'brand_name': forms.TextInput(attrs={'class':'brand_name'}),
-            'soh': forms.TextInput(attrs={'class':'beginning_balance'}),
+            'item_name': forms.TextInput(attrs={'class':'item','autocomplete': 'off'}),
+            'brand_name': forms.TextInput(attrs={'class':'brand_name', 'autocomplete': 'off'}),
+            'price': forms.TextInput(attrs={'class':'price', 'autocomplete': 'off'}),
+            'soh': forms.TextInput(attrs={'class':'soh', 'autocomplete': 'off'}),
         }
 
 
 ItemModelFormSet = modelformset_factory(
     Item, 
-    fields=('item','quantity'),
+    fields=('code','quantity'),
     extra=1,
     widgets={
-        'item': forms.Select(attrs={
+        'code': forms.Select(attrs={
             'class':'form-control',
             'placeholder': 'Item'
             }),

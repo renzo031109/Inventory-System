@@ -4,8 +4,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Item, ItemDetails
-from .forms import ItemFormGet,  ItemNameForm, ItemModelFormSet
+from .models import Item, ItemBase
+from .forms import ItemFormGet,  ItemNewForm, ItemModelFormSet
 
 
 
@@ -54,7 +54,7 @@ def home(request):
 def delete_item(request, id):
     if request.method == 'POST':
         item = Item.objects.get(id=id)
-        item_soh = ItemDetails.objects.get(item_name=item.item)
+        item_soh = Item.objects.get(item_name=item.item)
 
         updated_soh = int(item_soh.soh) + int(item.quantity)
         item_soh.soh = updated_soh
@@ -63,7 +63,7 @@ def delete_item(request, id):
     return redirect('home')
 
 def summary_item(request):
-    items = ItemDetails.objects.all()
+    items = Item.objects.all()
     context = {'items': items}
     return render(request, 'inventory/summary.html', context)
 
@@ -78,7 +78,7 @@ def get_item(request):
             #get the item qty from the form
             pick_qty = request.POST.get('quantity')
             #get the item SOH from model table
-            item_soh = ItemDetails.objects.get(id=pick_item)
+            item_soh = Item.objects.get(id=pick_item)
 
             if int(item_soh.soh) < int(pick_qty):
                 print("out of stock")
@@ -101,16 +101,22 @@ def get_item(request):
 def new_item(request):
 
     if request.method == 'POST':
-        form = ItemNameForm(request.POST)
+        form = ItemNewForm(request.POST)
 
         if form.is_valid():
             #get the value of the form
             form_item_name = request.POST.get('item_name')
             form_item_brand = request.POST.get('brand_name')
+
+            #assign default value to remarks 
+            code = form_item_name + " | " + form_item_brand
+            itemAddForm = form.save(commit=False)    
+            itemAddForm.code =  code
+            itemAddForm.remarks =  "IN"
                      
             #using try-except method in case of null value
             try:
-                record_name = ItemDetails.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
+                record_name = Item.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
 
                 for record in record_name:
                     if record.item_name == form_item_name and record.brand_name == form_item_brand:
@@ -121,11 +127,12 @@ def new_item(request):
                 record_name = None
 
             # item_soh.save()
-            form.save()
+            # form.save()
+            itemAddForm.save()
             messages.success(request, "New Item added successfully!")
             return redirect('summary_item')
     else:
-        form = ItemNameForm()
+        form = ItemNewForm()
 
     context = {'form': form}
     return render(request, 'inventory/new_item.html', context)
@@ -158,11 +165,11 @@ def add_item(request):
                     add_qty = form.cleaned_data.get('quantity')
                     #get the item SOH from model table
 
-                    item_soh = ItemDetails.objects.get(item_name=add_item)
+                    item_soh = Item.objects.get(item_name=add_item)
                     print(item_soh)
 
                     try:
-                        item_soh = ItemDetails.objects.get(item_name=add_item)
+                        item_soh = Item.objects.get(item_name=add_item)
                         print(item_soh)
                         #compute add soh
                         soh = int(item_soh.soh) + int(add_qty)
