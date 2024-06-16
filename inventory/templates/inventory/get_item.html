@@ -1,5 +1,6 @@
 {% extends 'base.html'  %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %}
   Get Item(s)
@@ -9,13 +10,52 @@
 {% block content %}
 
 
-<div class="container mt-5"></div>
-<h1>Get item</h1>
-  <form action="" method="POST">
-    {% csrf_token %}
-    {{ form | crispy }}
-    <button type="submit" class="btn btn-primary addbtn">Submit</button>
+
+<div class="container mt-5">
+
+
+  <form class="form-horizontal" method="POST" action="">
+  {% csrf_token %}
+  {{ formset.management_form }}
+  
+  <div class="row">
+      <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th colspan="4"><center><h3>GET ITEM FORM</h3></center></th>
+            </tr> 
+            <tr>
+        
+                <th scope="col" style="width:70%">Item Name</th>
+                <th scope="col" style="width:30%">Quantity</th>
+                <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody class="form-row spacer">
+              {% for form in formset %}
+              <tr> 
+              
+                <td>{{ form.item_code}}</td>
+                <td>{{ form.quantity }}</td>
+                
+                <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>
+                
+              </tr>
+              
+              {% endfor %}
+              
+          </tbody>
+      </table>
+      
+  </div>
+  
+  <button type="submit" class="btn btn-primary">SUBMIT</button>
+  
   </form>
-</div>
+  </div>
+
+
+  {% include 'inventory/formscript.html' %}
+
 
 {% endblock content %}

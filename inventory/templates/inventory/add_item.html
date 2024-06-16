@@ -33,20 +33,22 @@
             {% for form in formset %}
             <tr> 
             
-              <td>{{ form.code}}</td>
+              <td>{{ form.item_code}}</td>
               <td>{{ form.quantity }}</td>
               
               <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>
               
             </tr>
+            
             {% endfor %}
+            
         </tbody>
     </table>
+    
 </div>
 
-<div class="container text-center">
-        <button type="submit" class="btn btn-block btn-primary">SUBMIT</button>
-</div>
+<button type="submit" class="btn btn-primary">SUBMIT</button>
+
 </form>
 </div>
 

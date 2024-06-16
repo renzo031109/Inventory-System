@@ -129,7 +129,9 @@ USE_TZ = True
 
 # static settings
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR,'static'),
+    )
 
 # media
 MEDIA_URL = '/media/'
@@ -144,7 +146,6 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'user-login'
 
 # Message Tags for Bootstrap
-
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
     messages.INFO: 'alert-info',
@@ -152,3 +153,6 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+#Add comma separator on thousands value
+USE_THOUSAND_SEPARATOR = True
