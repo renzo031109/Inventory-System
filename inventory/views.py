@@ -53,13 +53,16 @@ def home(request):
 # @login_required
 def delete_item(request, id):
     if request.method == 'POST':
+        #get the selected value
         item = Item.objects.get(id=id)
-        item_soh = Item.objects.get(item_name=item.item)
+        item_soh = ItemBase.objects.get(item_code=item.item_code)
 
+        #return the quantity of the deleted item
         updated_soh = int(item_soh.soh) + int(item.quantity)
         item_soh.soh = updated_soh
         item_soh.save()
         item.delete()
+        messages.success(request, "Item is deleted successfully")
     return redirect('home')
 
 
@@ -71,44 +74,44 @@ def summary_item(request):
 
 
 
-def get_item(request):
+# def get_item(request):
     
-    if request.method == 'POST':
-        formset = ItemModelFormSet(request.POST)    
-        if formset.is_valid():
-            for form in formset:
+#     if request.method == 'POST':
+#         formset = ItemModelFormSet(request.POST)    
+#         if formset.is_valid():
+#             for form in formset:
 
-                if form.cleaned_data.get('item_code'):
+#                 if form.cleaned_data.get('item_code'):
 
-                    itemGetForm = form.save(commit=False)
-                    itemGetForm.remarks = "OUT"
+#                     itemGetForm = form.save(commit=False)
+#                     itemGetForm.remarks = "OUT"
 
-                    #get the item name from the form
-                    get_item_code = form.cleaned_data.get('item_code')
-                    #get the item qty from the form
-                    get_qty = form.cleaned_data.get('quantity')
-                    #get the item SOH from model table
-                    item_soh = ItemBase.objects.get(item_code=get_item_code)
-                    print(get_item_code)
-                    print(get_qty)
-                    print(item_soh)
+#                     #get the item name from the form
+#                     get_item_code = form.cleaned_data.get('item_code')
+#                     #get the item qty from the form
+#                     get_qty = form.cleaned_data.get('quantity')
+#                     #get the item SOH from model table
+#                     item_soh = ItemBase.objects.get(item_code=get_item_code)
+#                     print(get_item_code)
+#                     print(get_qty)
+#                     print(item_soh)
 
-                    if int(item_soh.soh) < int(get_qty):
-                        print("out of stock")
-                        messages.error(request, f"Sorry, Your available stock for {item_soh.item_name} is only {item_soh.soh}")
-                    else:
-                        #minus get item to soh
-                        new_soh = int(item_soh.soh) - int(get_qty)
-                        #get the updated item soh
-                        item_soh.soh = new_soh
-                        item_soh.save()
-                        form.save()
-                        messages.success(request, "You deducted the item from the records")
-                        return redirect('home')
-    else:
-        formset = ItemModelFormSet(queryset=Item.objects.none())
-    context = {'formset':formset}
-    return render(request,'inventory/get_item.html', context)
+#                     if int(item_soh.soh) < int(get_qty):
+#                         print("out of stock")
+#                         messages.error(request, f"Sorry, Your available stock for {item_soh.item_name} is only {item_soh.soh}")
+#                     else:
+#                         #minus get item to soh
+#                         new_soh = int(item_soh.soh) - int(get_qty)
+#                         #get the updated item soh
+#                         item_soh.soh = new_soh
+#                         item_soh.save()
+#                         itemGetForm.save()
+#                         messages.success(request, "You deducted the item from the records")
+#                         return redirect('home')
+#     else:
+#         formset = ItemModelFormSet(queryset=Item.objects.none())
+#     context = {'formset':formset}
+#     return render(request,'inventory/get_item.html', context)
 
 
 def new_item(request):
@@ -165,7 +168,7 @@ def add_item(request):
                 # #this is just for checking of form submitted
                 # for a,b in form.cleaned_data.items():
                 #     print(a,b)
-                
+            
                 # only save if name is present
                 print(form.cleaned_data.get('item_code'))
                 print(form.cleaned_data.get('quantity'))
@@ -180,7 +183,7 @@ def add_item(request):
                     add_qty = form.cleaned_data.get('quantity')
                     #get the item SOH from model table
 
-
+                    
                     try:
                         item_soh = ItemBase.objects.get(item_code=add_item_code)
                         print(f'try this item soh = {item_soh}')
@@ -205,4 +208,62 @@ def add_item(request):
 
     context = {'formset': formset}
     return render(request, 'inventory/add_item.html', context)
+
+
+
+def get_item(request):
+
+    if request.method == 'POST':
+        formset = ItemModelFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                # #this is just for checking of form submitted
+                # for a,b in form.cleaned_data.items():
+                #     print(a,b)
+                
+                # only save if name is present
+                print(form.cleaned_data.get('item_code'))
+                print(form.cleaned_data.get('quantity'))
+                if form.cleaned_data.get('item_code'):  
+                    #assign default value to remarks 
+                    itemGetForm = form.save(commit=False)    
+                    itemGetForm.remarks = "OUT"
+
+                    #get the item name from the form 
+                    get_item_code = form.cleaned_data.get('item_code')
+                    #get the item qty from the form
+                    get_qty = form.cleaned_data.get('quantity')
+                    #get the item SOH from model table
+                    
+                    try:
+                        item_soh = ItemBase.objects.get(item_code=get_item_code)
+                        print(f"item_soh = {item_soh.soh}")
+                        if item_soh.soh < get_qty:
+                            print("over")
+                            messages.error(request, f"Sorry, Your available stock for '{item_soh.item_name}' is only '{item_soh.soh}")
+                        else:
+                            print("under")
+                            #compute add soh
+                            soh = int(item_soh.soh) - int(get_qty)
+                            print("test")
+                            #get the updated soh after add
+                            item_soh.soh = int(soh)
+                            #save tables
+                            item_soh.save()
+
+                            itemGetForm.save()
+                            
+                    except:
+                        item_soh = 0
+                        
+            messages.success(request, f"Item(s) deducted successfully!")
+            return redirect('home')
+        else:
+            messages.error(request, "Invalid Input!")
+
+    else:
+        formset = ItemModelFormSet(queryset=Item.objects.none())
+
+    context = {'formset': formset}
+    return render(request, 'inventory/get_item.html', context)
 
