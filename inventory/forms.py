@@ -3,53 +3,39 @@ from django.forms import modelformset_factory
 from .models import Item, ItemBase
 
 
-        
-# class ItemFormGet(forms.ModelForm):
-#     class Meta:
-#         model = Item
-        
-#         fields = [
-#             'item_code',
-#             'quantity',
-#             'remarks'
-#         ]
-
-#         labels = {
-#             'item_code': 'Item Description',
-#             'quantity':'Quantity',
-#             'remarks':'remarks',
-#         }
-
-#         widgets = {
-#             'item_code': forms.Select(attrs={'class':'select-item'}),
-#             'quantity': forms.TextInput(attrs={'class':'quantity'}),
-#             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'})           
-#         }
- 
+uom_select = [
+    ("1", "PIECE"), 
+    ("2", "BOX"), 
+    ("3", "PAD"), 
+    ("4", "PACK"), 
+    ("5", "REAM"), 
+    ("6", "ROLL"),
+]
 
         
 class ItemNewForm(forms.ModelForm):
     class Meta:
         model = ItemBase
-        fields = ['item_name','brand_name','soh','price','item_code','remarks']
+        fields = ['item_name','brand_name','soh','uom','price','item_code','remarks']
         labels = {
-            'item_name': 'Item Name',
-            'brand_name': 'Brand Name',
-            'soh': 'Beginning Balance',
-            'price': 'Price',
-            'item_code': 'Item Code',
-            'remarks' : 'Remarks'
+            'item_name': 'ITEM NAME',
+            'brand_name': 'BRAND NAME',
+            'soh': 'BEGINNING BALANCE',
+            'price': 'PRICE',
+            'item_code': 'ITEM CODE',
+            'uom':'UOM',
+            'remarks' : 'REMARKS'
 
         }
         widgets = {
-            'item_name': forms.TextInput(attrs={'class':'ite_name','autocomplete': 'off'}),
-            'brand_name': forms.TextInput(attrs={'class':'brand_name', 'autocomplete': 'off'}),
-            'soh': forms.TextInput(attrs={'class':'soh', 'autocomplete': 'off'}),
-            'price': forms.TextInput(attrs={'class':'price', 'autocomplete': 'off'}),
-            'item_code': forms.TextInput(attrs={'class':'item_code','autocomplete': 'off','type':'hidden'}),
+            'item_name': forms.TextInput(attrs={'class':'ItemNewForm','autocomplete': 'off'}),
+            'brand_name': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
+            'soh': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
+            'uom': forms.Select(choices = uom_select, attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
+            'price': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
+            'item_code': forms.TextInput(attrs={'class':'ItemNewForm','autocomplete': 'off','type':'hidden'}),
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'}) 
         }
-
 
 ItemModelFormSet = modelformset_factory(
     Item, 

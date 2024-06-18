@@ -14,6 +14,7 @@ Summary
       <tr>
         <th scope="col">ITEM NAME</th>
         <th scope="col">BRAND</th>
+        <th scope="col">UOM</th>
         <th scope="col">SOH</th>
         <th scope="col">PRICE</th>
         <th scope="col">TOTAL VALUE</th>
@@ -25,7 +26,8 @@ Summary
       <tr>
         <td>{{ item.item_name }}</td>
         <td>{{ item.brand_name }}</td>
-        <td>{{ item.soh }}</td>
+        <td>{{ item.uom }}</td>
+        <td class="item_soh">{{ item.soh }}</td>
         <td>{{ item.price }}</td>
         <td>{{ item.totalValue }}</td>
       </tr>
@@ -37,3 +39,19 @@ Summary
 
 
 {% endblock content %}
+
+
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+$('.item_soh').blur(function(){
+  let sum = 0;
+  $('.item_soh').each(function(){
+    sum += Number($(this).val());
+  });
+  console.log(sum)
+});
+
+</script>
+{% endblock %}

@@ -17,40 +17,6 @@ def home(request):
 
 
 # @login_required
-# def add_item(request):
-    
-#     if request.method == 'POST':
-#         form = ItemFormAdd(request.POST)
-#         if form.is_valid(): 
-#             #get the item name from the form
-#             add_item = request.POST.get('item')
-#             #get the item qty from the form
-#             add_qty = request.POST.get('quantity')
-#             #get the item SOH from model table
-
-#             try:
-#                 item_soh = ItemDetails.objects.get(id=add_item)
-#                 print(item_soh)
-#                 #compute add soh
-#                 soh = int(item_soh.soh) + int(add_qty)
-#                 #get the updated soh after add
-#                 item_soh.soh = int(soh)
-#                 #save tables
-#                 item_soh.save()
-#             except:
-#                 item_soh = 0
-#                 soh = int(item_soh) + int(add_qty)
-            
-#             form.save()
-#             messages.success(request, "You added stock successfully!")
-#             return redirect('home')
-#     else:
-#         form = ItemFormAdd()
-#     context = {'form': form}
-#     return render(request, 'inventory/add_item.html', context)
-
-
-# @login_required
 def delete_item(request, id):
     if request.method == 'POST':
         #get the selected value
@@ -74,46 +40,6 @@ def summary_item(request):
 
 
 
-# def get_item(request):
-    
-#     if request.method == 'POST':
-#         formset = ItemModelFormSet(request.POST)    
-#         if formset.is_valid():
-#             for form in formset:
-
-#                 if form.cleaned_data.get('item_code'):
-
-#                     itemGetForm = form.save(commit=False)
-#                     itemGetForm.remarks = "OUT"
-
-#                     #get the item name from the form
-#                     get_item_code = form.cleaned_data.get('item_code')
-#                     #get the item qty from the form
-#                     get_qty = form.cleaned_data.get('quantity')
-#                     #get the item SOH from model table
-#                     item_soh = ItemBase.objects.get(item_code=get_item_code)
-#                     print(get_item_code)
-#                     print(get_qty)
-#                     print(item_soh)
-
-#                     if int(item_soh.soh) < int(get_qty):
-#                         print("out of stock")
-#                         messages.error(request, f"Sorry, Your available stock for {item_soh.item_name} is only {item_soh.soh}")
-#                     else:
-#                         #minus get item to soh
-#                         new_soh = int(item_soh.soh) - int(get_qty)
-#                         #get the updated item soh
-#                         item_soh.soh = new_soh
-#                         item_soh.save()
-#                         itemGetForm.save()
-#                         messages.success(request, "You deducted the item from the records")
-#                         return redirect('home')
-#     else:
-#         formset = ItemModelFormSet(queryset=Item.objects.none())
-#     context = {'formset':formset}
-#     return render(request,'inventory/get_item.html', context)
-
-
 def new_item(request):
 
     if request.method == 'POST':
@@ -130,7 +56,7 @@ def new_item(request):
                 record_name = ItemBase.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
 
                 for record in record_name:
-                    if record.item_name == form_item_name and record.brand_name == form_item_brand:
+                    if record.item_name.upper() == form_item_name.upper() and record.brand_name.upper() == form_item_brand.upper():
                         messages.error(request, "Item already exist!")
                         return redirect('new_item')
                        
@@ -147,7 +73,6 @@ def new_item(request):
      
             #assign generated code value to itemcode 
             itemAddForm.item_code = concat
-
             itemAddForm.save()
 
             messages.success(request, "New Item added successfully!")

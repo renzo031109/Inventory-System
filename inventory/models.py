@@ -1,5 +1,16 @@
 from django.db import models
 
+
+uom_select = [
+    ("1", "BOX"), 
+    ("2", "PACK"), 
+    ("3", "PAD"), 
+    ("4", "PIECE"), 
+    ("5", "REAM"), 
+    ("6", "ROLL"),
+]
+
+
 class ItemCode(models.Model):
     code = models.CharField(max_length=200, null=True)
 
@@ -15,6 +26,7 @@ class ItemBase(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     date_added = models.DateTimeField(auto_now_add=True)
     remarks = models.CharField(max_length=50, null=True)
+    uom = models.CharField(max_length=20, null=True)
 
     
     class Meta:
@@ -23,6 +35,13 @@ class ItemBase(models.Model):
     def __str__(self):
         return self.item_code
     
+    #save input to uppercase
+    def save(self):
+        self.item_name = self.item_name.upper()
+        self.brand_name = self.brand_name.upper()
+        super(ItemBase, self).save()
+        
+    #computation of total price per item
     def totalValue(self):
         return self.soh * self.price
     
@@ -32,6 +51,7 @@ class Item(models.Model):
     quantity = models.IntegerField(null=True) 
     remarks = models.CharField(max_length=50, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    uom = models.CharField(max_length=20, null=True)
     
 
     class Meta:
