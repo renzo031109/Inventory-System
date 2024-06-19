@@ -2,16 +2,6 @@ from django import forms
 from django.forms import modelformset_factory
 from .models import Item, ItemBase
 
-
-uom_select = [
-    ("1", "PIECE"), 
-    ("2", "BOX"), 
-    ("3", "PAD"), 
-    ("4", "PACK"), 
-    ("5", "REAM"), 
-    ("6", "ROLL"),
-]
-
         
 class ItemNewForm(forms.ModelForm):
     class Meta:
@@ -31,7 +21,7 @@ class ItemNewForm(forms.ModelForm):
             'item_name': forms.TextInput(attrs={'class':'ItemNewForm','autocomplete': 'off'}),
             'brand_name': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
             'soh': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
-            'uom': forms.Select(choices = uom_select, attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
+            'uom': forms.Select(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
             'price': forms.TextInput(attrs={'class':'ItemNewForm', 'autocomplete': 'off'}),
             'item_code': forms.TextInput(attrs={'class':'ItemNewForm','autocomplete': 'off','type':'hidden'}),
             'remarks': forms.TextInput(attrs={'value': 'OUT', 'type':'hidden'}) 

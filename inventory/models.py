@@ -1,14 +1,6 @@
 from django.db import models
 
 
-uom_select = [
-    ("1", "BOX"), 
-    ("2", "PACK"), 
-    ("3", "PAD"), 
-    ("4", "PIECE"), 
-    ("5", "REAM"), 
-    ("6", "ROLL"),
-]
 
 
 class ItemCode(models.Model):
@@ -18,6 +10,15 @@ class ItemCode(models.Model):
         return self.code
     
 
+class UOM(models.Model):
+    uom = models.CharField(max_length=30)
+    
+    def __str__(self):
+        return self.uom
+    
+    class Meta:
+        ordering = ["uom"]
+
 class ItemBase(models.Model):
     item_name = models.CharField(max_length=200, null=True)
     brand_name = models.CharField(max_length=200, blank=True, null=True)
@@ -26,7 +27,7 @@ class ItemBase(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     date_added = models.DateTimeField(auto_now_add=True)
     remarks = models.CharField(max_length=50, null=True)
-    uom = models.CharField(max_length=20, null=True)
+    uom = models.ForeignKey(UOM, on_delete=models.CASCADE, null=True)
 
     
     class Meta:
