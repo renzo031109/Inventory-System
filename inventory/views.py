@@ -49,7 +49,8 @@ def new_item(request):
             #get the value of the form
             form_item_name = request.POST.get('item_name')
             form_item_brand = request.POST.get('brand_name')
-            form_item_soh= request.POST.get('soh')
+            form_item_soh = request.POST.get('soh')
+            form_item_uom = request.POST.get('uom')
                      
             #using try-except method in case of null value
             try:
@@ -70,7 +71,10 @@ def new_item(request):
 
             #Assign form to a variable
             itemAddForm = form.save(commit=False)    
-     
+
+            #copy newitem to Item Transaction
+            itemTransaction = Item(item_name=form_item_name, brand_name=form_item_brand, quantity=form_item_soh, remarks="BEGINNING",uom=form_item_uom)
+            itemTransaction.save()
             #assign generated code value to itemcode 
             itemAddForm.item_code = concat
             itemAddForm.save()
@@ -98,10 +102,7 @@ def add_item(request):
                 print(form.cleaned_data.get('item_code'))
                 print(form.cleaned_data.get('quantity'))
                 if form.cleaned_data.get('item_code'):  
-                    #assign default value to remarks 
-                    itemAddForm = form.save(commit=False)    
-                    itemAddForm.remarks = "IN"
-
+                    
                     #get the item name from the form 
                     add_item_code = form.cleaned_data.get('item_code')
                     #get the item qty from the form
@@ -111,7 +112,7 @@ def add_item(request):
                     
                     try:
                         item_soh = ItemBase.objects.get(item_code=add_item_code)
-                        print(f'try this item soh = {item_soh}')
+                        print(f'try this item soh = {item_soh.item_name} AND {item_soh.brand_name} ')
                         #compute add soh
                         soh = int(item_soh.soh) + int(add_qty)
                         #get the updated soh after add
@@ -122,6 +123,11 @@ def add_item(request):
                         item_soh = 0
                         soh = int(item_soh) + int(add_qty)
 
+                    #assign default value to remarks 
+                    itemAddForm = form.save(commit=False)    
+                    itemAddForm.remarks = "IN"
+                    itemAddForm.item_name = item_soh.item_name
+                    itemAddForm.brand_name = item_soh.brand_name
                     itemAddForm.save()
             messages.success(request, "You added stock successfully!")
             return redirect('home')
@@ -150,10 +156,7 @@ def get_item(request):
                 print(form.cleaned_data.get('item_code'))
                 print(form.cleaned_data.get('quantity'))
                 if form.cleaned_data.get('item_code'):  
-                    #assign default value to remarks 
-                    itemGetForm = form.save(commit=False)    
-                    itemGetForm.remarks = "OUT"
-
+                    
                     #get the item name from the form 
                     get_item_code = form.cleaned_data.get('item_code')
                     #get the item qty from the form
@@ -176,6 +179,11 @@ def get_item(request):
                             #save tables
                             item_soh.save()
 
+                            #assign default value to remarks 
+                            itemGetForm = form.save(commit=False)    
+                            itemGetForm.remarks = "OUT"
+                            itemGetForm.item_name = item_soh.item_name
+                            itemGetForm.brand_name = item_soh.brand_name
                             itemGetForm.save()
                             
                     except:

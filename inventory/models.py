@@ -9,6 +9,10 @@ class ItemCode(models.Model):
     def __str__(self):
         return self.code
     
+    def save(self):
+        self.code= self.code.upper()
+        super(ItemCode, self).save()
+    
 
 class UOM(models.Model):
     uom = models.CharField(max_length=30)
@@ -53,6 +57,8 @@ class Item(models.Model):
     remarks = models.CharField(max_length=50, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     uom = models.CharField(max_length=20, null=True)
+    item_name = models.CharField(max_length=200, null=True)
+    brand_name = models.CharField(max_length=200, blank=True, null=True)
     
 
     class Meta:
@@ -60,6 +66,11 @@ class Item(models.Model):
 
     def __str__(self):
         return str(self.item_code)
+    
+    def save(self):
+        self.item_name = self.item_name.upper()
+        self.brand_name = self.brand_name.upper()
+        super(Item, self).save()
     
     
     

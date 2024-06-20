@@ -12,7 +12,8 @@ MyHOME
   <center><h3 class="ititles">INVENTORY REPORT</h3></center>
     <thead class="table-dark"> 
       <tr>
-        <th scope="col">ITEM TAG</th>
+        <th scope="col">ITEM NAME</th>
+        <th scope="col">BRAND NAME</th>
         <th scope="col">STOCK ON HAND</th>
         <th scope="col">UOM</th>
         <th scope="col">DATE</th>
@@ -24,7 +25,8 @@ MyHOME
 
       {% for item in items %}
       <tr>
-        <td>{{ item.item_code }}</td>
+        <td>{{ item.item_name }}</td>
+        <td>{{ item.brand_name }}</td>
         <td>{{ item.quantity }}</td>
         <td>{{ item.uom }}</td>
         <td>{{ item.date_added }}</td>
