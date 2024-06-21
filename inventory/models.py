@@ -44,6 +44,7 @@ class ItemBase(models.Model):
     def save(self):
         self.item_name = self.item_name.upper()
         self.brand_name = self.brand_name.upper()
+        self.item_code = self.item_code.upper()
         super(ItemBase, self).save()
         
     #computation of total price per item
@@ -57,7 +58,7 @@ class Item(models.Model):
     remarks = models.CharField(max_length=50, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     uom = models.CharField(max_length=20, null=True)
-    item_name = models.CharField(max_length=200, null=True)
+    item_name = models.CharField(max_length=200, blank=True, null=True, )
     brand_name = models.CharField(max_length=200, blank=True, null=True)
     
 
@@ -65,7 +66,7 @@ class Item(models.Model):
         ordering = ["-date_added"]
 
     def __str__(self):
-        return str(self.item_code)
+        return str(self.item_name)
     
     def save(self):
         self.item_name = self.item_name.upper()

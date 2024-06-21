@@ -144,6 +144,8 @@ def add_item(request):
 
 def get_item(request):
 
+    messages_count = []
+
     if request.method == 'POST':
         formset = ItemModelFormSet(request.POST)
         if formset.is_valid():
@@ -163,33 +165,35 @@ def get_item(request):
                     get_qty = form.cleaned_data.get('quantity')
                     #get the item SOH from model table
                     
-                    try:
-                        item_soh = ItemBase.objects.get(item_code=get_item_code)
-                        print(f"item_soh = {item_soh.soh}")
-                        if item_soh.soh < get_qty:
-                            print("over")
-                            messages.error(request, f"Sorry, Your available stock for '{item_soh.item_name}' is only '{item_soh.soh}")
-                        else:
-                            print("under")
-                            #compute add soh
-                            soh = int(item_soh.soh) - int(get_qty)
-                            print("test")
-                            #get the updated soh after add
-                            item_soh.soh = int(soh)
-                            #save tables
-                            item_soh.save()
+               
+                    item_soh = ItemBase.objects.get(item_code=get_item_code)
+                    print(f"item_soh = {item_soh.soh}")
+                    if item_soh.soh < get_qty:
+                        print("over")
+                        messages.error(request, f"Sorry, Your available stock for '{item_soh.item_name}' is only '{item_soh.soh}")
+                    else:
+                        print("under")
+                        #compute add soh
+                        soh = int(item_soh.soh) - int(get_qty)
+                        print("test")
+                        #get the updated soh after add
+                        item_soh.soh = int(soh)
+                        #save tables
+                        item_soh.save()
 
-                            #assign default value to remarks 
-                            itemGetForm = form.save(commit=False)    
-                            itemGetForm.remarks = "OUT"
-                            itemGetForm.item_name = item_soh.item_name
-                            itemGetForm.brand_name = item_soh.brand_name
-                            itemGetForm.save()
-                            
-                    except:
-                        item_soh = 0
+                        #assign default value to remarks 
+                        itemGetForm = form.save(commit=False)    
+                        itemGetForm.remarks = "OUT"
+                        itemGetForm.item_name = item_soh.item_name
+                        itemGetForm.brand_name = item_soh.brand_name
+                        itemGetForm.save()
                         
-            messages.success(request, f"Item(s) deducted successfully!")
+                        messages_count.append(item_soh.item_name)
+                    
+            if(messages_count):
+                print(nessage_count)
+                # messages.success(request, f"Item(s) deducted successfully! {message_count}")
+
             return redirect('home')
         else:
             messages.error(request, "Invalid Input!")

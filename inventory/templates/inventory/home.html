@@ -33,12 +33,14 @@ MyHOME
         <td>{{ item.remarks }}</td>
         
        <td>
+          {% if item.remarks != 'BEGINNING' %}
           <center>
             <form action="{% url 'delete_item' item.id %}" method="POST">
               {% csrf_token %}
               <button type="submit" class="delete-btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
             </form> 
           </center>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}
