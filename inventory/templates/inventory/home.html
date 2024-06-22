@@ -4,17 +4,38 @@
 MyHOME
 {% endblock title %}
 
+{% load crispy_forms_tags %}
 
 {% block content %}
 
-<div class="container mt-5"> 
+
+<!-- sort option -->
+
+<button class="btn btn-success mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
+
+<div class="card card-body mt-3" id="filter-slide">
+      <h5>FILTER BY:</h5>
+      <form action="" method="get" class="form-control-sm form-inline">
+
+          {{ itemFilter.form | crispy }}
+
+          <button class="btn btn-primary" type="submit">SEARCH</button>
+
+      </form>
+
+</div>
+
+
+
+
+<div class="card card-body mt-3">
 <table class="table table-bordered table-hover table-striped">
   <center><h3 class="ititles">INVENTORY REPORT</h3></center>
     <thead class="table-dark"> 
       <tr>
         <th scope="col">ITEM NAME</th>
         <th scope="col">BRAND NAME</th>
-        <th scope="col">STOCK ON HAND</th>
+        <th scope="col">QUANTITY</th>
         <th scope="col">UOM</th>
         <th scope="col">DATE</th>
         <th scope="col">REMARKS</th>
@@ -47,6 +68,7 @@ MyHOME
 
     </tbody>
   </table>
+</div>
 </div>
 
 

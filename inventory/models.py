@@ -73,6 +73,16 @@ class Item(models.Model):
         self.brand_name = self.brand_name.upper()
         super(Item, self).save()
     
+    def sort_ascending(self):
+        return self.date_added.order_by('')
+
+    @property
+    def sorted_attendee_set(self):
+        return self.date_added.order_by('date_added')
+    
+    @property
+    def sorted_attendee_set(self):
+        return self.date_added.order_by('-date_added')
     
     
 

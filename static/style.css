@@ -4,6 +4,21 @@
    width: 1%;
 }
 
-btn-message-alert{
+
+.btn-message-alert{
    float: right
 }
+
+/* User greetings */
+#hi-name{
+   color: white;
+   padding-top: 7px;
+   padding-left: 12px;
+   padding-right: 10px;
+}
+
+body{
+   background-color: #ebeff5;
+}
+
+

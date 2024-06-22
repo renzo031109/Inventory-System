@@ -4,15 +4,24 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from .models import Item, ItemBase, ItemCode
 from .forms import ItemNewForm, ItemModelFormSet
+from .filters import ItemFilter
 
 
 
 # @login_required
 def home(request):
+
     items = Item.objects.all()
-    context = {'items': items}
+    item_count = items.count()
+
+    itemFilter = ItemFilter(request.GET, queryset=items)
+    items = itemFilter.qs
+    print(item_count)
+
+    context = {'items': items, 'item_count': item_count, 'itemFilter': itemFilter}
     return render(request,'inventory/home.html', context)
 
 
@@ -128,8 +137,11 @@ def add_item(request):
                     itemAddForm.remarks = "IN"
                     itemAddForm.item_name = item_soh.item_name
                     itemAddForm.brand_name = item_soh.brand_name
+                    itemAddForm.uom = item_soh.uom
                     itemAddForm.save()
+
             messages.success(request, "You added stock successfully!")
+            
             return redirect('home')
         else:
             messages.error(request, "Invalid Input!")
@@ -143,8 +155,6 @@ def add_item(request):
 
 
 def get_item(request):
-
-    messages_count = []
 
     if request.method == 'POST':
         formset = ItemModelFormSet(request.POST)
@@ -164,12 +174,10 @@ def get_item(request):
                     #get the item qty from the form
                     get_qty = form.cleaned_data.get('quantity')
                     #get the item SOH from model table
-                    
-               
+                           
                     item_soh = ItemBase.objects.get(item_code=get_item_code)
-                    print(f"item_soh = {item_soh.soh}")
+
                     if item_soh.soh < get_qty:
-                        print("over")
                         messages.error(request, f"Sorry, Your available stock for '{item_soh.item_name}' is only '{item_soh.soh}")
                     else:
                         print("under")
@@ -186,13 +194,14 @@ def get_item(request):
                         itemGetForm.remarks = "OUT"
                         itemGetForm.item_name = item_soh.item_name
                         itemGetForm.brand_name = item_soh.brand_name
+                        itemGetForm.uom = item_soh.uom
                         itemGetForm.save()
                         
-                        messages_count.append(item_soh.item_name)
+                        # messages_count.append(item_soh.item_name)
                     
-            if(messages_count):
-                print(nessage_count)
-                # messages.success(request, f"Item(s) deducted successfully! {message_count}")
+            # if(messages_count):
+            #     print(messages_count)
+                        messages.success(request, f"'{item_soh.item_name}' stock on hand was updated successfully!")
 
             return redirect('home')
         else:
