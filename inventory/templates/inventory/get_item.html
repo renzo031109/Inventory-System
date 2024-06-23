@@ -11,18 +11,30 @@
 
 <div class="card card-body mt-5 pb-4">
 
-<div class="container mt-5">
+<div class="container mt-3">
 
 <form class="form-horizontal" method="POST" action="">
 {% csrf_token %}
 {{ formset.management_form }}
 
 <div class="row">
-    <table class="table table-bordered table-hover">
+
+  <div class="get-item-title"></div><center><h3>GET ITEM FORM</h3></center>
+  <p></p>
+  {% for identity in formset %}
+    {{ identity.staff_name.label_tag }}
+    {{ identity.staff_name }}
+    <p></p>
+    {{ identity.client_name.label_tag }}
+    {{ identity.client_name }}
+    <p></p>
+    {{ identity.department_name.label_tag }}
+    {{ identity.department_name }}
+  {% endfor %}
+
+    <table class="table table-bordered table-hover mt-4">
         <thead>
-          <tr>
-            <th colspan="4"><center><h3>GET ITEM FORM</h3></center></th>
-          </tr> 
+
           <tr>
       
               <th scope="col" style="width:70%">Item Name</th>

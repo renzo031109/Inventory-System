@@ -12,14 +12,15 @@
 <div class="card card-body mt-5">
 <div class="container mt-3">
 
-
 <form class="form-horizontal" method="POST" action="">
 {% csrf_token %}
 {{ formset.management_form }}
 
 <div class="row">
-    <table class="table table-bordered table-hover">
+
+    <table class="table table-bordered table-hover mt-3">
         <thead>
+
           <tr>
             <th colspan="4"><center><h3>ADD ITEM FORM</h3></center></th>
           </tr> 
@@ -34,7 +35,7 @@
             {% for form in formset %}
             <tr> 
             
-              <td>{{ form.item_code}}</td>
+              <td>{{ form.item_code }}</td>
               <td>{{ form.quantity }}</td>
               
               <td><center><button type="button" class="btn btn-success add-form-row">+</button></center></td>

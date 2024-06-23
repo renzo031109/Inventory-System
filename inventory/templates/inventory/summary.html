@@ -4,25 +4,48 @@
 Summary
 {% endblock title %}
 
+{% load crispy_forms_tags %}
+
+{% load sorting_tags %}
+
 
 {% block content %}
 
-<div class="container mt-5">
+
+<!-- filter option -->
+
+<button class="btn mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
+
+<div class="card card-body mt-3" id="filter-slide">
+      <h5>FILTER BY:</h5>
+      <form action="" method="get" class="form-control-sm">
+
+          {{ itemFilter.form | crispy }}
+
+          <button class="btn btn-primary" type="submit">SEARCH</button>
+
+      </form>
+
+</div>
+
+
+<div class="card card-body mt-3">
 <table class="table table-bordered table-hover table-striped">
   <center><h3 class="ititles">ITEMS SUMMARY</h3></center>
-    <thead class="table-dark">
+    <thead class="table-primary">
       <tr>
-        <th scope="col">ITEM NAME</th>
-        <th scope="col">BRAND</th>
-        <th scope="col">UOM</th>
-        <th scope="col">SOH</th>
-        <th scope="col">PRICE</th>
+        <th scope="col">{% anchor item_name _("ITEM NAME") %}</th>
+        <th scope="col">{% anchor brand_name _("BRAND NAME") %}</th>
+        <th scope="col">{% anchor uom _("UOM") %}</th>
+        <th scope="col">{% anchor soh _("SOH") %}</th>
+        <th scope="col">{% anchor price _("PRICE") %}</th>
         <th scope="col">TOTAL VALUE</th>
+        <th scope="col">{% anchor date_added _("DATE ADDED") %}</th>
       </tr>
     </thead>
     <tbody>
-
-      {% for item in items %}
+      {% autosort items as sorted_items %}
+      {% for item in sorted_items %}
       <tr>
         <td>{{ item.item_name }}</td>
         <td>{{ item.brand_name }}</td>
@@ -30,28 +53,16 @@ Summary
         <td class="item_soh">{{ item.soh }}</td>
         <td>{{ item.price }}</td>
         <td>{{ item.totalValue }}</td>
+        <td>{{ item.date_added }}</td>
       </tr>
       {% endfor %}
 
     </tbody>
   </table>
 </div>
+</div>
 
+{% include 'inventory/compute.html' %}
 
 {% endblock content %}
 
-
-{% block custom_js %}
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script type="text/javascript">
-
-$('.item_soh').blur(function(){
-  let sum = 0;
-  $('.item_soh').each(function(){
-    sum += Number($(this).val());
-  });
-  console.log(sum)
-});
-
-</script>
-{% endblock %}

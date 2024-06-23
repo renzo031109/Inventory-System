@@ -29,8 +29,13 @@ class ItemNewForm(forms.ModelForm):
 
 ItemModelFormSet = modelformset_factory(
     Item, 
-    fields=('item_code','quantity','item_name','brand_name'),
+    fields=('item_code','quantity','item_name','brand_name','staff_name','client_name','department_name'),
     extra=1,
+    labels={
+        'staff_name': 'STAFF NAME',
+        'client_name': 'CLIENT NAME',
+        'dapartment_name': 'DEPARTMENT NAME'
+    },
     widgets={
         'item_code': forms.Select(attrs={
             'class':'form-control form-select',
@@ -52,7 +57,19 @@ ItemModelFormSet = modelformset_factory(
         'brand_name': forms.TextInput(attrs={
             'class':'form-control',
             'type':'hidden'
-            })
+            }),
+        'staff_name': forms.TextInput(attrs={
+            'class':'form-control',
+     
+            }),
+        'client_name': forms.Select(attrs={
+            'class':'form-control',
+ 
+            }),
+        'department_name': forms.Select(attrs={
+            'class':'form-control',
+       
+            }),
 
     }
 )

@@ -1,6 +1,26 @@
 from django.db import models
 
 
+class Client(models.Model):
+    client = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.client
+    
+    def save(self):
+        self.client = self.client.upper()
+        super(Client, self).save()
+
+
+class Department(models.Model):
+    department = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.department
+
+    def save(self):
+        self.department = self.department.upper()
+        super(Department, self).save()
 
 
 class ItemCode(models.Model):
@@ -10,7 +30,7 @@ class ItemCode(models.Model):
         return self.code
     
     def save(self):
-        self.code= self.code.upper()
+        self.code = self.code.upper()
         super(ItemCode, self).save()
     
 
@@ -23,6 +43,11 @@ class UOM(models.Model):
     class Meta:
         ordering = ["uom"]
 
+    def save(self):
+        self.uom= self.uom.upper()
+        super(UOM, self).save()
+
+
 class ItemBase(models.Model):
     item_name = models.CharField(max_length=200, null=True)
     brand_name = models.CharField(max_length=200, blank=True, null=True)
@@ -33,7 +58,6 @@ class ItemBase(models.Model):
     remarks = models.CharField(max_length=50, null=True)
     uom = models.ForeignKey(UOM, on_delete=models.CASCADE, null=True)
 
-    
     class Meta:
         ordering = ["item_name"]
 
@@ -58,10 +82,13 @@ class Item(models.Model):
     remarks = models.CharField(max_length=50, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     uom = models.CharField(max_length=20, null=True)
-    item_name = models.CharField(max_length=200, blank=True, null=True, )
+    item_name = models.CharField(max_length=200, blank=True, null=True)
     brand_name = models.CharField(max_length=200, blank=True, null=True)
-    
+    staff_name = models.CharField(max_length=100, null=True, blank=True)
+    client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    department_name = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
 
+    
     class Meta:
         ordering = ["-date_added"]
 
@@ -73,16 +100,9 @@ class Item(models.Model):
         self.brand_name = self.brand_name.upper()
         super(Item, self).save()
     
-    def sort_ascending(self):
-        return self.date_added.order_by('')
 
-    @property
-    def sorted_attendee_set(self):
-        return self.date_added.order_by('date_added')
-    
-    @property
-    def sorted_attendee_set(self):
-        return self.date_added.order_by('-date_added')
+
+
     
     
 

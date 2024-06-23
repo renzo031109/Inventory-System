@@ -8,19 +8,26 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">HOME</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'add_item' %}" >Add Stock</a>
+            <a class="nav-link" href="{% url 'add_item' %}" >ADD QUANTITY</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'new_item' %}" >Add New Item(s)</a>
+            <a class="nav-link" href="{% url 'new_item' %}" >ADD NEW ITEM(s)</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'get_item' %}" >Get Stock</a>
+            <a class="nav-link" href="{% url 'get_item' %}" >GET ITEM</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'summary_item' %}" >Summary</a>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              REPORT
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'summary_item' %}">SUMMARY REPORT</a></li>
+              <li><a class="dropdown-item" href="{% url 'home' %}">INVENTORY REPORT</a></li>
+            </ul>
           </li>
         </ul>
     

@@ -32,7 +32,7 @@ MyHOME
 <div class="card card-body mt-3">
 <table class="table table-bordered table-hover table-striped">
   <center><h3 class="ititles">INVENTORY REPORT</h3></center>
-    <thead class="table-dark"> 
+    <thead class="table-primary"> 
       <tr>
         
         <th scope="col">{% anchor item_name _("ITEM NAME") %}</th>
@@ -41,6 +41,9 @@ MyHOME
         <th scope="col">{% anchor uom _("UOM") %}</th>
         <th scope="col">{% anchor date_added _("DATE ADDED") %}</th>
         <th scope="col">{% anchor remarks _("REMARKS") %}</th>
+        <th scope="col">{% anchor staff_name _("STAFF NAME") %}</th>
+        <th scope="col">{% anchor client_name _("CLIENT NAME") %}</th>
+        <th scope="col">{% anchor department_name _("DEPARTMENT NAME") %}</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -56,6 +59,9 @@ MyHOME
         <td>{{ item.uom }}</td>
         <td>{{ item.date_added }}</td>
         <td>{{ item.remarks }}</td>
+        <td>{{ item.staff_name }}</td>
+        <td>{{ item.client_name }}</td>
+        <td>{{ item.department_name }}</td>
      
        <td>
           {% if item.remarks != 'BEGINNING' %}
