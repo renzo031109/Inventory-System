@@ -6,16 +6,19 @@ MyHOME
 
 {% load crispy_forms_tags %}
 
+{% load sorting_tags %}
+
 {% block content %}
 
 
-<!-- sort option -->
 
-<button class="btn btn-success mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
+<!-- filter option -->
+
+<button class="btn mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
 
 <div class="card card-body mt-3" id="filter-slide">
       <h5>FILTER BY:</h5>
-      <form action="" method="get" class="form-control-sm form-inline">
+      <form action="" method="get" class="form-control-sm">
 
           {{ itemFilter.form | crispy }}
 
@@ -26,25 +29,26 @@ MyHOME
 </div>
 
 
-
-
 <div class="card card-body mt-3">
 <table class="table table-bordered table-hover table-striped">
   <center><h3 class="ititles">INVENTORY REPORT</h3></center>
     <thead class="table-dark"> 
       <tr>
-        <th scope="col">ITEM NAME</th>
-        <th scope="col">BRAND NAME</th>
-        <th scope="col">QUANTITY</th>
-        <th scope="col">UOM</th>
-        <th scope="col">DATE</th>
-        <th scope="col">REMARKS</th>
+        
+        <th scope="col">{% anchor item_name _("ITEM NAME") %}</th>
+        <th scope="col">{% anchor brand_name _("BRAND NAME") %}</th>
+        <th scope="col">{% anchor quantity _("QUANTITY") %}</th>
+        <th scope="col">{% anchor uom _("UOM") %}</th>
+        <th scope="col">{% anchor date_added _("DATE ADDED") %}</th>
+        <th scope="col">{% anchor remarks _("REMARKS") %}</th>
         <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
-
-      {% for item in items %}
+      
+      {% autosort items as sorted_items %}
+      {% for item in sorted_items %}
+     
       <tr>
         <td>{{ item.item_name }}</td>
         <td>{{ item.brand_name }}</td>
@@ -52,7 +56,7 @@ MyHOME
         <td>{{ item.uom }}</td>
         <td>{{ item.date_added }}</td>
         <td>{{ item.remarks }}</td>
-        
+     
        <td>
           {% if item.remarks != 'BEGINNING' %}
           <center>
@@ -64,8 +68,9 @@ MyHOME
           {% endif %}
         </td>
       </tr>
+      
       {% endfor %}
-
+      
     </tbody>
   </table>
 </div>

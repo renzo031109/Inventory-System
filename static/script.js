@@ -15,7 +15,11 @@ $("#filter-slide").hide();
 
 // Toggle on filter option
 $("#filterBtn").click(function(){
+   
+   $(this).toggleClass('btn-success');
+
    $("#filter-slide").slideToggle("slow");
+   
    });
 
 });

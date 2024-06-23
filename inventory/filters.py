@@ -5,9 +5,9 @@ from django import forms
 
 
 remarks_select = (
-    ('in', 'IN'),
-    ('out', 'OUT'),
-    ('beginning','BEGINNING')
+    ('IN', 'IN'),
+    ('OUT', 'OUT'),
+    ('BEGINNING','BEGINNING')
 )
 
 

@@ -15,13 +15,23 @@ from .filters import ItemFilter
 def home(request):
 
     items = Item.objects.all()
-    item_count = items.count()
+    item_count_total= items.count()
 
     itemFilter = ItemFilter(request.GET, queryset=items)
     items = itemFilter.qs
-    print(item_count)
+    
+    item_count = items.count()
+    
+    if item_count > 0 :
+        messages.success(request, f"Found '{item_count}' of '{item_count_total}' in the database")
+    else:
+        messages.error(request, f"Item not Found in the database ")
 
-    context = {'items': items, 'item_count': item_count, 'itemFilter': itemFilter}
+    context = {
+        'items': items, 
+        'item_count': item_count, 
+        'itemFilter': itemFilter
+        }
     return render(request,'inventory/home.html', context)
 
 
