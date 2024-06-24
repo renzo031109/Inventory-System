@@ -14,7 +14,7 @@ Summary
 
 <!-- filter option -->
 
-<button class="btn mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
+<button class="btn btn-primary mt-3" id="filterBtn"><i class="fa-solid fa-filter"></i> FILTER</button>
 
 <div class="card card-body mt-3" id="filter-slide">
       <h5>FILTER BY:</h5>
@@ -39,7 +39,7 @@ Summary
         <th scope="col">{% anchor uom _("UOM") %}</th>
         <th scope="col">{% anchor soh _("SOH") %}</th>
         <th scope="col">{% anchor price _("PRICE") %}</th>
-        <th scope="col">TOTAL VALUE</th>
+        <th scope="col">{% anchor total_value _("TOTAL VALUE") %}</th>
         <th scope="col">{% anchor date_added _("DATE ADDED") %}</th>
       </tr>
     </thead>
@@ -52,7 +52,7 @@ Summary
         <td>{{ item.uom }}</td>
         <td class="item_soh">{{ item.soh }}</td>
         <td>{{ item.price }}</td>
-        <td>{{ item.totalValue }}</td>
+        <td>{{ item.total_value }}</td>
         <td>{{ item.date_added }}</td>
       </tr>
       {% endfor %}
@@ -61,8 +61,6 @@ Summary
   </table>
 </div>
 </div>
-
-{% include 'inventory/compute_script.html' %}
 
 {% endblock content %}
 

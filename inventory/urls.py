@@ -8,6 +8,7 @@ urlpatterns = [
     path('get_item/', views.get_item, name='get_item'),
     path('new_item/', views.new_item, name='new_item'),
     path('add_item/', views.add_item, name='add_item'),
+    path('submitted/', views.submitted, name='submitted'),
 
     
 

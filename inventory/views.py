@@ -44,6 +44,10 @@ def delete_item(request, id):
         #return the quantity of the deleted item
         updated_soh = int(item_soh.soh) + int(item.quantity)
         item_soh.soh = updated_soh
+
+        #update Total value and save
+        total = updated_soh * item_soh.price
+        item_soh.total_value = total
         item_soh.save()
         item.delete()
         messages.success(request, "Item is deleted successfully")
@@ -143,15 +147,21 @@ def add_item(request):
                     add_item_code = form.cleaned_data.get('item_code')
                     #get the item qty from the form
                     add_qty = form.cleaned_data.get('quantity')
-                    #get the item SOH from model table
+                    
                     
                     try:
+                        #get the item SOH from model table
                         item_soh = ItemBase.objects.get(item_code=add_item_code)
-                        # print(f'try this item soh = {item_soh.item_name} AND {item_soh.brand_name} ')
+    
                         #compute add soh
                         soh = int(item_soh.soh) + int(add_qty)
                         #get the updated soh after add
                         item_soh.soh = int(soh)
+
+                        #update Total value
+                        total = item_soh.soh * item_soh.price
+                        item_soh.total_value = total
+
                         #save tables
                         item_soh.save()
                     except:
@@ -189,8 +199,12 @@ def get_item(request):
 
     #Initiate a list variable for the input select fields
     staff_name_list = []
-    client_name_list =[]
+    client_name_list = []
     department_name_list = []
+
+    #list for validation checking
+    item_error_list = []
+    item_success_list = []
 
     if request.method == 'POST':
         formset = ItemModelFormSet(request.POST)
@@ -231,12 +245,16 @@ def get_item(request):
 
                     if item_soh.soh < get_qty:
                         messages.error(request, f"Sorry, Your available stock for '{item_soh.item_name}' is only '{item_soh.soh}")
+                        item_error_list.append(item_soh.item_name)
                     else:
-                        print("under")
+                        item_success_list.append(item_soh.item_name)
                         #compute add soh
                         soh = int(item_soh.soh) - int(get_qty)
                         #get the updated soh after add
                         item_soh.soh = int(soh)
+                        #update Total value
+                        total = item_soh.soh * item_soh.price
+                        item_soh.total_value = total
                         #save tables
                         item_soh.save()
 
@@ -255,9 +273,11 @@ def get_item(request):
                     
             # if(messages_count):
             #     print(messages_count)
-                        messages.success(request, f"'{item_soh.item_name}' stock on hand was updated successfully!")
+                        # messages.success(request, f"'{item_soh.item_name}' stock on hand was updated successfully!")
 
-            return redirect('home')
+            if len(item_error_list) == 0 and len(item_success_list) != 0:
+                return redirect('submitted')
+            
         else:
             messages.error(request, "Invalid Input!")
 
@@ -267,3 +287,6 @@ def get_item(request):
     context = {'formset': formset}
     return render(request, 'inventory/get_item.html', context)
 
+
+def submitted(request):
+    return render(request, 'inventory/submitted.html')

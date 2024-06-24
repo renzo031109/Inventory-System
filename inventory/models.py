@@ -54,6 +54,7 @@ class ItemBase(models.Model):
     soh = models.IntegerField(null=True)
     item_code = models.CharField(max_length=200, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_value = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     remarks = models.CharField(max_length=50, null=True)
     uom = models.ForeignKey(UOM, on_delete=models.CASCADE, null=True)
@@ -71,9 +72,9 @@ class ItemBase(models.Model):
         self.item_code = self.item_code.upper()
         super(ItemBase, self).save()
         
-    #computation of total price per item
-    def totalValue(self):
-        return self.soh * self.price
+    # #computation of total price per item
+    # def totalValue(self):
+    #     return self.soh * self.price
     
 
 class Item(models.Model):
