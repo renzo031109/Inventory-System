@@ -10,7 +10,7 @@ from .filters import ItemFilter, ItemBaseFilter
 
 
 
-# @login_required
+@login_required
 def home(request):
 
     items = Item.objects.all()
@@ -22,9 +22,9 @@ def home(request):
     item_count = items.count()
     
     if item_count > 0 :
-        messages.success(request, f"Found '{item_count}' of '{item_count_total}' in the database")
+        messages.info(request, f"Found '{item_count}' of '{item_count_total}' in the database")
     else:
-        messages.error(request, f"Item not Found in the database ")
+        messages.info(request, f"Item not Found in the database ")
 
     context = {
         'items': items, 
@@ -34,7 +34,7 @@ def home(request):
     return render(request,'inventory/home.html', context)
 
 
-# @login_required
+@login_required
 def delete_item(request, id):
     if request.method == 'POST':
         #get the selected value
@@ -50,7 +50,7 @@ def delete_item(request, id):
     return redirect('home')
 
 
-
+@login_required
 def summary_item(request):
     items = ItemBase.objects.all()
     item_count_total= items.count()
@@ -60,9 +60,9 @@ def summary_item(request):
     item_count = items.count()
 
     if item_count > 0 :
-        messages.success(request, f"Found '{item_count}' of '{item_count_total}' in the database")
+        messages.info(request, f"Found '{item_count}' of '{item_count_total}' in the database")
     else:
-        messages.error(request, f"Item not Found in the database ")
+        messages.info(request, f"Item not Found in the database ")
 
     context = {
         'items': items,
@@ -72,7 +72,7 @@ def summary_item(request):
     return render(request, 'inventory/summary.html', context)
 
 
-
+@login_required
 def new_item(request):
 
     if request.method == 'POST':
@@ -105,9 +105,13 @@ def new_item(request):
             #Assign form to a variable
             itemAddForm = form.save(commit=False)    
 
+            #define user for the staffname
+            user = request.user
+
             #copy newitem to Item Transaction
-            itemTransaction = Item(item_name=form_item_name, brand_name=form_item_brand, quantity=form_item_soh, remarks="BEGINNING",uom=form_item_uom)
+            itemTransaction = Item(item_name=form_item_name, brand_name=form_item_brand, quantity=form_item_soh, remarks="BEGINNING",uom=form_item_uom, staff_name=user.username)
             itemTransaction.save()
+
             #assign generated code value to itemcode 
             itemAddForm.item_code = concat
             itemAddForm.save()
@@ -121,6 +125,7 @@ def new_item(request):
     return render(request, 'inventory/new_item.html', context)
 
 
+@login_required
 def add_item(request):
 
     if request.method == 'POST':
@@ -179,7 +184,7 @@ def add_item(request):
     return render(request, 'inventory/add_item.html', context)
 
 
-
+@login_required
 def get_item(request):
 
     #Initiate a list variable for the input select fields
