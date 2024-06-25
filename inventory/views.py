@@ -22,7 +22,7 @@ def home(request):
     item_count = items.count()
     
     if item_count > 0 :
-        messages.info(request, f"Found '{item_count}' of '{item_count_total}' in the database")
+        messages.info(request, f"Found '{item_count}' item(s) in the database")
     else:
         messages.info(request, f"Item not Found in the database ")
 
@@ -64,7 +64,7 @@ def summary_item(request):
     item_count = items.count()
 
     if item_count > 0 :
-        messages.info(request, f"Found '{item_count}' of '{item_count_total}' in the database")
+        messages.info(request, f"Found '{item_count}' item(s) in the database")
     else:
         messages.info(request, f"Item not Found in the database ")
 
@@ -244,7 +244,7 @@ def get_item(request):
                     department_name = department_name_list[0]
 
                     if item_soh.soh < get_qty:
-                        messages.error(request, f"Sorry, Your available stock for '{item_soh.item_name}' is only '{item_soh.soh}")
+                        messages.error(request, f"Ooops, Your available stock for '{item_soh.item_name}' is only '{item_soh.soh}")
                         item_error_list.append(item_soh.item_name)
                     else:
                         item_success_list.append(item_soh.item_name)
@@ -273,10 +273,17 @@ def get_item(request):
                     
             # if(messages_count):
             #     print(messages_count)
-                        # messages.success(request, f"'{item_soh.item_name}' stock on hand was updated successfully!")
+                        # 
+            invalid_form = len(item_error_list)
+            valid_form = len(item_success_list)
 
-            if len(item_error_list) == 0 and len(item_success_list) != 0:
+            if invalid_form == 0 and valid_form != 0:
                 return redirect('submitted')
+            elif invalid_form > 0 and valid_form > 0:
+                messages.info(request, f"{valid_form} item(s) are submitted. Please re-input the item(s) with insufficient stock on hand.")
+                return redirect('get_item')    
+            else:
+                return redirect('get_item')
             
         else:
             messages.error(request, "Invalid Input!")
