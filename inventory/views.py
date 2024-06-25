@@ -7,14 +7,16 @@ from django.contrib import messages
 from .models import Item, ItemBase, ItemCode
 from .forms import ItemNewForm, ItemModelFormSet
 from .filters import ItemFilter, ItemBaseFilter
+from django.http import HttpResponse
+from openpyxl import Workbook
 
 
 
 @login_required
 def home(request):
-
+    
     items = Item.objects.all()
-    item_count_total= items.count()
+    # item_count_total= items.count()
 
     itemFilter = ItemFilter(request.GET, queryset=items)
     items = itemFilter.qs
@@ -57,7 +59,7 @@ def delete_item(request, id):
 @login_required
 def summary_item(request):
     items = ItemBase.objects.all()
-    item_count_total= items.count()
+    # item_count_total= items.count()
 
     itemFilter = ItemBaseFilter(request.GET, queryset=items)
     items = itemFilter.qs
@@ -297,3 +299,49 @@ def get_item(request):
 
 def submitted(request):
     return render(request, 'inventory/submitted.html')
+
+
+def export_excel(request):
+
+    #Export excel function
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="inventory_report.xlsx"'
+
+    # Declare Workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Inventory Report"
+
+    # Add headers
+    headers =   [
+                'ITEM NAME',	
+                'BRAND NAME',
+                'QUANTITY',	
+                'UOM',	
+                # 'DATE ADDED',
+                'REMARKS',	
+                'STAFF NAME',
+                # 'CLIENT NAME',
+                'DEPARTMENT NAME'	
+                ]
+    
+    ws.append(headers)
+
+    # Add data from the model
+    items = Item.objects.all()
+    for item in items:
+        ws.append([
+            item.item_name,
+            item.brand_name,
+            item.quantity,
+            item.uom,
+            # item.date_added,
+            item.remarks,
+            item.staff_name,
+            # item.client_name,
+            # item.department_name
+        ])
+    
+    wb.save(response)
+    return response
+

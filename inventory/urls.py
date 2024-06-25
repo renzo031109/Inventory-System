@@ -9,8 +9,6 @@ urlpatterns = [
     path('new_item/', views.new_item, name='new_item'),
     path('add_item/', views.add_item, name='add_item'),
     path('submitted/', views.submitted, name='submitted'),
-
-    
-
+    path('export_file/', views.export_excel, name='export_file')
 
 ]
