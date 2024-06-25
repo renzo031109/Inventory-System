@@ -269,19 +269,19 @@ def get_item(request):
                         itemGetForm.department_name = department_name
                         itemGetForm.save()
                         
-                        # messages_count.append(item_soh.item_name)
-                    
-            # if(messages_count):
-            #     print(messages_count)
-                        # 
+            #assign length variables
             invalid_form = len(item_error_list)
             valid_form = len(item_success_list)
 
+            # if values are valid send to submitted template
             if invalid_form == 0 and valid_form != 0:
                 return redirect('submitted')
+
+            # if 1 of the values are valid 
             elif invalid_form > 0 and valid_form > 0:
                 messages.info(request, f"{valid_form} item(s) are submitted. Please re-input the item(s) with insufficient stock on hand.")
                 return redirect('get_item')    
+            # re input the items     
             else:
                 return redirect('get_item')
             
