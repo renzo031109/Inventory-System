@@ -8,6 +8,7 @@ from .models import Item, ItemBase, ItemCode
 from .forms import ItemNewForm, ItemModelFormSet
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
+from django.core.paginator import Paginator
 
 from openpyxl.styles.borders import Border, Side, BORDER_THIN
 from openpyxl import Workbook
@@ -16,27 +17,12 @@ from openpyxl.styles import *
 
 
 
-
 @login_required
 def home(request):
     
-    items = Item.objects.all()
-    # item_count_total= items.count()
-
-    itemFilter = ItemFilter(request.GET, queryset=items)
-    items = itemFilter.qs
-    
-    item_count = items.count()
-    
-    if item_count > 0 :
-        messages.info(request, f"Found '{item_count}' item(s) in the database")
-    else:
-        messages.info(request, f"Item not Found in the database ")
 
     context = {
-        'items': items, 
-        'item_count': item_count, 
-        'itemFilter': itemFilter
+
         }
     return render(request,'inventory/home.html', context)
 
@@ -47,7 +33,7 @@ def inventory_item(request):
     
     items = Item.objects.all()
     # item_count_total= items.count()
-
+    
     itemFilter = ItemFilter(request.GET, queryset=items)
     items = itemFilter.qs
     
@@ -57,13 +43,19 @@ def inventory_item(request):
         messages.info(request, f"Found '{item_count}' item(s) in the database")
     else:
         messages.info(request, f"Item not Found in the database ")
+    
+    #pagination show 50 items per page
+    paginator = Paginator(items, 25)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'items': items, 
         'item_count': item_count, 
-        'itemFilter': itemFilter
+        'itemFilter': itemFilter,
+        'page_obj': page_obj
         }
-    return render(request,'inventory/home.html', context)
+    return render(request,'inventory/inventory.html', context)
 
 
 @login_required
@@ -100,10 +92,16 @@ def summary_item(request):
     else:
         messages.info(request, f"Item not Found in the database ")
 
+    #pagination show 50 items per page
+    paginator = Paginator(items, 25)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     context = {
         'items': items,
         'item_count': item_count,
-        'itemFilter': itemFilter
+        'itemFilter': itemFilter,
+        'page_obj':page_obj
         }
     return render(request, 'inventory/summary.html', context)
 

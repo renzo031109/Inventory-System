@@ -31,3 +31,4 @@ body{
    text-align: center
 } *
 
+.myfooter{ align-content: center; } /* one-line vertical centering */
