@@ -21,4 +21,13 @@ body{
    background-color: #ebeff5;
 }
 
+ /* For right align */
+.text-right {
+   text-align: right
+}
+
+ /* For right align */
+.text-center {
+   text-align: center
+} *
 

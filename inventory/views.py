@@ -8,12 +8,42 @@ from .models import Item, ItemBase, ItemCode
 from .forms import ItemNewForm, ItemModelFormSet
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
+
+from openpyxl.styles.borders import Border, Side, BORDER_THIN
 from openpyxl import Workbook
+from datetime import datetime
+from openpyxl.styles import *
+
 
 
 
 @login_required
 def home(request):
+    
+    items = Item.objects.all()
+    # item_count_total= items.count()
+
+    itemFilter = ItemFilter(request.GET, queryset=items)
+    items = itemFilter.qs
+    
+    item_count = items.count()
+    
+    if item_count > 0 :
+        messages.info(request, f"Found '{item_count}' item(s) in the database")
+    else:
+        messages.info(request, f"Item not Found in the database ")
+
+    context = {
+        'items': items, 
+        'item_count': item_count, 
+        'itemFilter': itemFilter
+        }
+    return render(request,'inventory/home.html', context)
+
+
+
+@login_required
+def inventory_item(request):
     
     items = Item.objects.all()
     # item_count_total= items.count()
@@ -138,9 +168,6 @@ def add_item(request):
         formset = ItemModelFormSet(request.POST)
         if formset.is_valid():
             for form in formset:
-                # #this is just for checking of form submitted
-                # for a,b in form.cleaned_data.items():
-                #     print(a,b)
                 
                 # check if itemcode is selected
                 if form.cleaned_data.get('item_code'):  
@@ -176,11 +203,11 @@ def add_item(request):
                     itemAddForm.item_name = item_soh.item_name
                     itemAddForm.brand_name = item_soh.brand_name
                     itemAddForm.uom = item_soh.uom
+
                     #get the current user
                     user = request.user
                     itemAddForm.staff_name = user.username
-                    # itemAddForm.client_name = "SHORE360"
-                    # itemAddForm.department_name = "PURCHASING"
+  
                     itemAddForm.save()
                     
             messages.success(request, "You added stock successfully!")
@@ -212,10 +239,7 @@ def get_item(request):
         formset = ItemModelFormSet(request.POST)
         if formset.is_valid():
             for form in formset:
-                # #this is just for checking of form submitted
-                # for a,b in form.cleaned_data.items():
-                #     print(a,b)
-                
+
                 # only save if name is present
                 print(form.cleaned_data.get('item_code'))
                 print(form.cleaned_data.get('quantity'))
@@ -301,16 +325,30 @@ def submitted(request):
     return render(request, 'inventory/submitted.html')
 
 
-def export_excel(request):
+def export_excel_inventory(request):
 
     #Export excel function
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="inventory_report.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="ITEM INVENTORY REPORT.xlsx"'
+
+    thin_border = Border(left=Side(style='thin'), 
+                     right=Side(style='thin'), 
+                     top=Side(style='thin'), 
+                     bottom=Side(style='thin'))
+
 
     # Declare Workbook
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Inventory Report"
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.merge_cells('A1:I1')
+
+    first_cell = worksheet['A1']
+    first_cell.value = "ITEM INVENTORY REPORT"
+    first_cell.font = Font(bold=True)
+    first_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+
+    worksheet.title = "Inventory Report"
 
     # Add headers
     headers =   [
@@ -318,30 +356,115 @@ def export_excel(request):
                 'BRAND NAME',
                 'QUANTITY',	
                 'UOM',	
-                # 'DATE ADDED',
+                'DATE ADDED',
                 'REMARKS',	
                 'STAFF NAME',
-                # 'CLIENT NAME',
+                'CLIENT NAME',
                 'DEPARTMENT NAME'	
                 ]
-    
-    ws.append(headers)
+    row_num = 2
+
+
+    for col_num, column_title in enumerate(headers, 1):
+        cell = worksheet.cell(row=row_num, column=col_num)
+        cell.value = column_title
+        cell.fill = PatternFill("solid", fgColor="CFE2FF")
+        cell.font = Font(bold=True, color="0B5ED7")
+        cell.border = thin_border
+
 
     # Add data from the model
     items = Item.objects.all()
     for item in items:
-        ws.append([
+        
+        #convert object fields to string
+        client_name = str(item.client_name)
+        department_name = str(item.department_name)
+        date_added = datetime.strftime(item.date_added,'%m/%d/%Y %H:%M:%S')
+
+        worksheet.append([
             item.item_name,
             item.brand_name,
             item.quantity,
             item.uom,
-            # item.date_added,
+            date_added,
             item.remarks,
             item.staff_name,
-            # item.client_name,
-            # item.department_name
+            client_name,
+            department_name
         ])
     
-    wb.save(response)
+    workbook.save(response)
     return response
+
+
+def export_excel_summary(request):
+
+    #Export excel function
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="SUMMARY ITEM REPORT.xlsx"'
+
+    thin_border = Border(left=Side(style='thin'), 
+                     right=Side(style='thin'), 
+                     top=Side(style='thin'), 
+                     bottom=Side(style='thin'))
+
+
+    # Declare Workbook
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.merge_cells('A1:G1')
+
+    first_cell = worksheet['A1']
+    first_cell.value = "SUMMARY ITEM REPORT"
+    first_cell.font = Font(bold=True)
+    first_cell.alignment = Alignment(horizontal="center", vertical="center")
+
+
+    worksheet.title = "SUMMARY ITEM REPORT"
+
+    # Add headers
+    headers =   [
+                'ITEM NAME',	
+                'BRAND NAME',
+                'UOM',	
+                'SOH',
+                'PRICE',	
+                'TOTAL VALUE',
+                'DATE ADDED'
+                ]
+    row_num = 2
+
+
+    for col_num, column_title in enumerate(headers, 1):
+        cell = worksheet.cell(row=row_num, column=col_num)
+        cell.value = column_title
+        cell.fill = PatternFill("solid", fgColor="CFE2FF")
+        cell.font = Font(bold=True, color="0B5ED7")
+        cell.border = thin_border
+
+
+    # Add data from the model
+    items = ItemBase.objects.all()
+    for item in items:
+        
+        #convert object fields to string
+
+        uom = str(item.uom)
+        date_added = datetime.strftime(item.date_added,'%m/%d/%Y %H:%M:%S')
+
+        worksheet.append([
+            item.item_name,
+            item.brand_name,
+            uom,
+            item.soh,
+            item.price,
+            item.total_value,
+            date_added,
+        ])
+    
+    workbook.save(response)
+    return response
+
+
 
