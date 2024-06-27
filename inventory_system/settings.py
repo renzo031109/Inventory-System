@@ -39,12 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'inventory.apps.InventoryConfig',
+    'dashboard.apps.DashboardConfig',
     'user.apps.UserConfig',
 
     "crispy_forms",
     "crispy_bootstrap5",
     'webstack_django_sorting',
+    
 
 ]
 
