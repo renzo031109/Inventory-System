@@ -31,4 +31,12 @@ body{
    text-align: center
 } *
 
-.myfooter{ align-content: center; } /* one-line vertical centering */
+footer{ 
+background-color: #FFF;
+font-size: small;
+position: fixed;
+bottom: 0px;
+width: 400px;
+text-align: center;
+width: 100%;
+} /* one-line vertical centering */
