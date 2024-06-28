@@ -40,3 +40,9 @@ width: 400px;
 text-align: center;
 width: 100%;
 } /* one-line vertical centering */
+
+/* form color change */
+.form-label {
+   margin-bottom: .5rem;
+   color: slategrey;
+}
