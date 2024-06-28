@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('', views.dashboard_view, name='dashboard'),
+    path('critical_stock_excel_export/', views.critical_stock_excel_export, name='critical_stock_excel_export'),
 
 ]

@@ -30,7 +30,7 @@ HOME
 
 
 
-<div class="card card-body mt-3">
+<div class="card card-body mt-3 shadow fade show">
 <table class="table table-bordered table-hover table-striped">
   <center><h3 class="ititles">ITEM INVENTORY REPORT</h3></center>
     <thead class="table-primary"> 
@@ -69,7 +69,7 @@ HOME
           <center>
             <form action="{% url 'delete_item' item.id %}" method="POST">
               {% csrf_token %}
-              <button type="submit" class="delete-btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+              <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
             </form> 
           </center>
           {% endif %}

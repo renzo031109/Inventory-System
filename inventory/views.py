@@ -17,14 +17,14 @@ from openpyxl.styles import *
 
 
 
-@login_required
-def home(request):
+# @login_required
+# def home(request):
     
 
-    context = {
+#     context = {
 
-        }
-    return render(request,'inventory/home.html', context)
+#         }
+#     return render(request,'inventory/home.html', context)
 
 
 
@@ -40,7 +40,7 @@ def inventory_item(request):
     item_count = items.count()
     
     if item_count > 0 :
-        messages.info(request, f"Found '{item_count}' item(s) in the database")
+        messages.info(request, f"Found '{item_count}' transaction in the database")
     else:
         messages.info(request, f"Item not Found in the database ")
     
@@ -75,7 +75,24 @@ def delete_item(request, id):
         item_soh.save()
         item.delete()
         messages.success(request, "Item is deleted successfully")
-    return redirect('home')
+    return redirect('inventory_item')
+
+
+
+def delete_itembase(request, item_code):
+    if request.method == 'POST':
+        item = ItemBase.objects.get(item_code=item_code)
+        itemcode = ItemCode.objects.get(code=item)
+
+        print(item)
+        print(itemcode)
+
+        item.delete()
+        itemcode.delete()
+
+        messages.success(request, "{{item.item_name}} is deleted successfully")
+    return redirect('summary_item')
+
 
 
 @login_required
@@ -210,7 +227,7 @@ def add_item(request):
                     
             messages.success(request, "You added stock successfully!")
             
-            return redirect('home')
+            return redirect('inventory_item')
         else:
             messages.error(request, "Invalid Input!")
 

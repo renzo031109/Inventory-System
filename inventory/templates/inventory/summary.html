@@ -30,9 +30,9 @@ Summary
 </div>
 
 
-<div class="card card-body mt-3">
+<div class="card card-body mt-3 shadow fade show">
 <table class="table table-bordered table-hover table-striped">
-  <center><h3 class="ititles">ITEMS SUMMARY</h3></center>
+  <center><h3 class="ititles">ITEM SUMMARY</h3></center>
     <thead class="table-primary">
       <tr>
         <th scope="col">{% anchor item_name _("ITEM NAME") %}</th>
@@ -42,6 +42,7 @@ Summary
         <th scope="col" class="text-right">{% anchor price _("PRICE") %}</th>
         <th scope="col" class="text-right">{% anchor total_value _("TOTAL VALUE") %}</th>
         <th scope="col">{% anchor date_added _("DATE ADDED") %}</th>
+        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
@@ -55,6 +56,14 @@ Summary
         <td class="text-right">{{ item.price }}</td>
         <td class="text-right">{{ item.total_value }}</td>
         <td>{{ item.date_added }}</td>
+        <td>
+          <center>
+              <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete{{ item.id }}"><i class="fa-solid fa-trash"></i></button>
+          </center>
+
+          {% include 'inventory/modal_delete.html' %}
+
+        </td>
       </tr>
       {% endfor %}
 
@@ -63,7 +72,7 @@ Summary
 </div>
 </div>
 
-<div class="pagination justify-content-center mt-5 pb-5">
+<div class="pagination justify-content-center mt-5 pb-5 shadow fade show">
   <span class="step-links">
       {% if page_obj.has_previous %}
           <a href="?page=1"><button class="btn btn-primary"><i class="fa-solid fa-backward-step"></i></button></a>

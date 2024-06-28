@@ -16,4 +16,4 @@ def register(request):
 
 def logoutPage(request):
     logout(request)
-    return redirect('home')
+    return redirect('user-login')

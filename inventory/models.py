@@ -28,6 +28,9 @@ class ItemCode(models.Model):
 
     def __str__(self):
         return self.code
+
+    class Meta:
+        ordering = ["code"]
     
     def save(self):
         self.code = self.code.upper()
@@ -50,7 +53,7 @@ class UOM(models.Model):
 
 class ItemBase(models.Model):
     item_name = models.CharField(max_length=200, null=True)
-    brand_name = models.CharField(max_length=200, blank=True, null=True)
+    brand_name = models.CharField(max_length=200, null=True)
     soh = models.IntegerField(null=True)
     item_code = models.CharField(max_length=200, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
