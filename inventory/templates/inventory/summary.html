@@ -30,7 +30,7 @@ Summary
 </div>
 
 
-<div class="card card-body mt-3 shadow fade show">
+<div class="card card-body mt-3 mb-5 shadow fade show">
 <table class="table table-bordered table-hover table-striped">
   <center><h3 class="ititles">ITEM SUMMARY</h3></center>
     <thead class="table-primary">
@@ -46,7 +46,7 @@ Summary
       </tr>
     </thead>
     <tbody>
-      {% autosort page_obj as sorted_items %}
+      {% autosort items as sorted_items %}
       {% for item in sorted_items %}
       <tr>
         <td>{{ item.item_name }}</td>
@@ -72,7 +72,7 @@ Summary
 </div>
 </div>
 
-<div class="pagination justify-content-center mt-5 pb-5 shadow fade show">
+<!-- <div class="pagination justify-content-center mt-5 pb-5 shadow fade show">
   <span class="step-links">
       {% if page_obj.has_previous %}
           <a href="?page=1"><button class="btn btn-primary"><i class="fa-solid fa-backward-step"></i></button></a>
@@ -88,7 +88,7 @@ Summary
           <a href="?page={{ page_obj.paginator.num_pages }}"><button class="btn btn-primary"><i class="fa-solid fa-forward-step"></i></button></a>
       {% endif %}
   </span>
-</div>
+</div> -->
 
 {% endblock content %}
 

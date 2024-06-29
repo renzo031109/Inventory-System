@@ -8,7 +8,7 @@ from .models import Item, ItemBase, ItemCode, UOM, Client, Department
 from .forms import ItemNewForm, ItemModelFormSet
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
-from django.core.paginator import Paginator
+# from django.core.paginator import Paginator
 
 #for export excel imports
 from openpyxl.styles.borders import Border, Side, BORDER_THIN
@@ -37,16 +37,16 @@ def inventory_item(request):
     else:
         messages.info(request, f"Item not Found in the database ")
     
-    #pagination show 50 items per page
-    paginator = Paginator(items, 25)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    # #pagination show 50 items per page
+    # paginator = Paginator(items, 25)
+    # page_number = request.GET.get("page")
+    # page_obj = paginator.get_page(page_number)
 
     context = {
         'items': items, 
         'item_count': item_count, 
         'itemFilter': itemFilter,
-        'page_obj': page_obj
+        # 'page_obj': page_obj
         }
     return render(request,'inventory/inventory.html', context)
 
@@ -83,7 +83,7 @@ def delete_itembase(request, item_code):
         item.delete()
         itemcode.delete()
 
-        messages.success(request, "{{item.item_name}} is deleted successfully")
+        messages.success(request, f"{item.item_name} is deleted successfully")
     return redirect('summary_item')
 
 
@@ -102,16 +102,16 @@ def summary_item(request):
     else:
         messages.info(request, f"Item not Found in the database ")
 
-    #pagination show 50 items per page
-    paginator = Paginator(items, 25)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    # #pagination show 50 items per page
+    # paginator = Paginator(items, 25)
+    # page_number = request.GET.get("page")
+    # page_obj = paginator.get_page(page_number)
 
     context = {
         'items': items,
         'item_count': item_count,
         'itemFilter': itemFilter,
-        'page_obj':page_obj
+        # 'page_obj':page_obj
         }
     return render(request, 'inventory/summary.html', context)
 

@@ -30,7 +30,7 @@ HOME
 
 
 
-<div class="card card-body mt-3 shadow fade show">
+<div class="card card-body mt-3 mb-5 shadow fade show">
 <table class="table table-bordered table-hover table-striped">
   <center><h3 class="ititles">ITEM INVENTORY REPORT</h3></center>
     <thead class="table-primary"> 
@@ -50,7 +50,7 @@ HOME
     </thead>
     <tbody>
       
-      {% autosort page_obj as sorted_items %}
+      {% autosort items as sorted_items %}
       {% for item in sorted_items %}
      
       <tr>
@@ -84,7 +84,7 @@ HOME
 </div>
 
 
-<div class="pagination justify-content-center mt-5 pb-5">
+<!-- <div class="pagination justify-content-center mt-5 pb-5">
   <span class="step-links">
       {% if page_obj.has_previous %}
           <a href="?page=1"><button class="btn btn-primary"><i class="fa-solid fa-backward-step"></i></button></a>
@@ -100,7 +100,7 @@ HOME
           <a href="?page={{ page_obj.paginator.num_pages }}"><button class="btn btn-primary"><i class="fa-solid fa-forward-step"></i></button></a>
       {% endif %}
   </span>
-</div>
+</div> -->
 
 
 
