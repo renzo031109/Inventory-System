@@ -4,29 +4,22 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Item, ItemBase, ItemCode
+from .models import Item, ItemBase, ItemCode, UOM, Client, Department
 from .forms import ItemNewForm, ItemModelFormSet
 from .filters import ItemFilter, ItemBaseFilter
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 
+#for export excel imports
 from openpyxl.styles.borders import Border, Side, BORDER_THIN
 from openpyxl import Workbook
 from datetime import datetime
 from openpyxl.styles import *
 
 
-
-# @login_required
-# def home(request):
-    
-
-#     context = {
-
-#         }
-#     return render(request,'inventory/home.html', context)
-
-
+#set universal variable for user settings.
+user_department = "FINANCE"
+user_client = "SHORE360"
 
 @login_required
 def inventory_item(request):
@@ -125,6 +118,7 @@ def summary_item(request):
 
 @login_required
 def new_item(request):
+    #initialize user client and department static
 
     if request.method == 'POST':
         form = ItemNewForm(request.POST)
@@ -135,7 +129,11 @@ def new_item(request):
             form_item_brand = request.POST.get('brand_name')
             form_item_soh = request.POST.get('soh')
             form_item_uom = request.POST.get('uom')
-                     
+            form_item_price = request.POST.get('price')
+
+            #convert UOM id to values of foreign key
+            uom_value = UOM.objects.get(id=form_item_uom)
+         
             #using try-except method in case of null value
             try:
                 record_name = ItemBase.objects.filter(item_name=form_item_name, brand_name=form_item_brand)
@@ -154,17 +152,30 @@ def new_item(request):
             itemcode.save()
 
             #Assign form to a variable
-            itemAddForm = form.save(commit=False)    
+            itemAddForm = form.save(commit=False)
 
             #define user for the staffname
             user = request.user
+            client = Client.objects.get(client=user_client)
+            department=Department.objects.get(department=user_department)
 
             #copy newitem to Item Transaction
-            itemTransaction = Item(item_name=form_item_name, brand_name=form_item_brand, quantity=form_item_soh, remarks="BEGINNING",uom=form_item_uom, staff_name=user.username)
+            itemTransaction = Item(
+                                    item_code=itemcode, 
+                                    item_name=form_item_name, 
+                                    brand_name=form_item_brand, 
+                                    quantity=form_item_soh, 
+                                    remarks="BEGINNING",
+                                    uom=uom_value, 
+                                    staff_name=user.username,
+                                    client_name=client,
+                                    department_name=department
+                                    )
             itemTransaction.save()
 
             #assign generated code value to itemcode 
             itemAddForm.item_code = concat
+            itemAddForm.total_value = int(form_item_price) * int(form_item_soh)
             itemAddForm.save()
 
             messages.success(request, "New Item added successfully!")
@@ -196,6 +207,10 @@ def add_item(request):
                     try:
                         #get the item SOH from model table
                         item_soh = ItemBase.objects.get(item_code=add_item_code)
+
+                        #assign value to client and department of authenticated user
+                        client = Client.objects.get(client=user_client)
+                        department = Department.objects.get(department=user_department)
     
                         #compute add soh
                         soh = int(item_soh.soh) + int(add_qty)
@@ -222,6 +237,8 @@ def add_item(request):
                     #get the current user
                     user = request.user
                     itemAddForm.staff_name = user.username
+                    itemAddForm.client_name = client
+                    itemAddForm.department_name = department
   
                     itemAddForm.save()
                     
@@ -336,10 +353,12 @@ def get_item(request):
     return render(request, 'inventory/get_item.html', context)
 
 
+@login_required
 def submitted(request):
     return render(request, 'inventory/submitted.html')
 
 
+@login_required
 def export_excel_inventory(request):
 
     #Export excel function
@@ -413,6 +432,7 @@ def export_excel_inventory(request):
     return response
 
 
+@login_required
 def export_excel_summary(request):
 
     #Export excel function

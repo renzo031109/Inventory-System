@@ -8,7 +8,7 @@ from openpyxl.styles.borders import Border, Side, BORDER_THIN
 from openpyxl import Workbook
 from openpyxl.styles import *
 
-
+#set universal variable for value critical
 critical_value = 10
 
 # Create your views here.
