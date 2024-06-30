@@ -21,6 +21,42 @@ from openpyxl.styles import *
 user_department = "FINANCE"
 user_client = "SHORE360"
 
+
+
+@login_required
+def summary_item(request):
+    items = ItemBase.objects.all()
+    # item_count_total= items.count()
+
+    itemFilter = ItemBaseFilter(request.GET, queryset=items)
+    items = itemFilter.qs
+    item_count = items.count()
+
+    if item_count > 0 :
+        messages.info(request, f"Found '{item_count}' item(s) in the database")
+    else:
+        messages.info(request, f"Item not Found in the database ")
+
+    # #pagination show 50 items per page
+    # paginator = Paginator(items, 25)
+    # page_number = request.GET.get("page")
+    # page_obj = paginator.get_page(page_number)
+
+    # Compute Total Value
+    total_value = 0
+    for value in items:
+        total_value += float(value.total_value)
+
+    context = {
+        'items': items,
+        'item_count': item_count,
+        'itemFilter': itemFilter,
+        'total_value': total_value
+        # 'page_obj':page_obj
+        }
+    return render(request, 'inventory/summary.html', context)
+
+
 @login_required
 def inventory_item(request):
     
@@ -42,8 +78,11 @@ def inventory_item(request):
     # page_number = request.GET.get("page")
     # page_obj = paginator.get_page(page_number)
 
+    itembase = ItemBase.objects.all()
+
     context = {
         'items': items, 
+        'itembase': itembase,
         'item_count': item_count, 
         'itemFilter': itemFilter,
         # 'page_obj': page_obj
@@ -89,34 +128,6 @@ def delete_itembase(request, item_code):
 
 
 @login_required
-def summary_item(request):
-    items = ItemBase.objects.all()
-    # item_count_total= items.count()
-
-    itemFilter = ItemBaseFilter(request.GET, queryset=items)
-    items = itemFilter.qs
-    item_count = items.count()
-
-    if item_count > 0 :
-        messages.info(request, f"Found '{item_count}' item(s) in the database")
-    else:
-        messages.info(request, f"Item not Found in the database ")
-
-    # #pagination show 50 items per page
-    # paginator = Paginator(items, 25)
-    # page_number = request.GET.get("page")
-    # page_obj = paginator.get_page(page_number)
-
-    context = {
-        'items': items,
-        'item_count': item_count,
-        'itemFilter': itemFilter,
-        # 'page_obj':page_obj
-        }
-    return render(request, 'inventory/summary.html', context)
-
-
-@login_required
 def new_item(request):
     #initialize user client and department static
 
@@ -149,7 +160,6 @@ def new_item(request):
             #assign default value to remarks
             concat = form_item_name + " | " + form_item_brand
             itemcode = ItemCode(code=concat)
-            itemcode.save()
 
             #Assign form to a variable
             itemAddForm = form.save(commit=False)
@@ -171,15 +181,23 @@ def new_item(request):
                                     client_name=client,
                                     department_name=department
                                     )
-            itemTransaction.save()
+            
 
             #assign generated code value to itemcode 
             itemAddForm.item_code = concat
-            itemAddForm.total_value = int(form_item_price) * int(form_item_soh)
-            itemAddForm.save()
+            itemAddForm.total_value = float(form_item_price) * int(form_item_soh)
 
-            messages.success(request, "New Item added successfully!")
-            return redirect('summary_item')
+            try:
+                #save tables if no error found
+                itemAddForm.save()
+                itemcode.save()
+                itemTransaction.save()
+
+                messages.success(request, "New Item added successfully!")
+                return redirect('summary_item')
+            except:
+                messages.error(request, "Invalid Input")
+
     else:
         form = ItemNewForm()
 
@@ -233,6 +251,7 @@ def add_item(request):
                     itemAddForm.item_name = item_soh.item_name
                     itemAddForm.brand_name = item_soh.brand_name
                     itemAddForm.uom = item_soh.uom
+                    itemAddForm.price = item_soh.price
 
                     #get the current user
                     user = request.user
@@ -273,8 +292,6 @@ def get_item(request):
             for form in formset:
 
                 # only save if name is present
-                print(form.cleaned_data.get('item_code'))
-                print(form.cleaned_data.get('quantity'))
                 if form.cleaned_data.get('item_code'):  
                     
                     #get the item name from the form 
@@ -321,6 +338,7 @@ def get_item(request):
                         itemGetForm.remarks = "OUT"
                         itemGetForm.item_name = item_soh.item_name
                         itemGetForm.brand_name = item_soh.brand_name
+                        itemGetForm.price = item_soh.price
                         itemGetForm.uom = item_soh.uom
                         itemGetForm.staff_name = staff_name
                         itemGetForm.client_name = client_name
@@ -337,7 +355,7 @@ def get_item(request):
 
             # if 1 of the values are valid 
             elif invalid_form > 0 and valid_form > 0:
-                messages.info(request, f"{valid_form} item(s) are submitted. Please re-input the item(s) with insufficient stock on hand.")
+                messages.info(request, f"'{valid_form}' item(s) is/are submitted. Please re-input the item(s) with insufficient stock on hand.")
                 return redirect('get_item')    
             # re input the items     
             else:

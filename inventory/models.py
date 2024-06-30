@@ -91,6 +91,7 @@ class Item(models.Model):
     staff_name = models.CharField(max_length=100, null=True, blank=True)
     client_name = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
     department_name = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
     
     class Meta:
@@ -103,6 +104,11 @@ class Item(models.Model):
         self.item_name = self.item_name.upper()
         self.brand_name = self.brand_name.upper()
         super(Item, self).save()
+
+    #computation of total price per item
+    @property
+    def totalAmt(self):
+        return self.quantity * self.price
     
 
 

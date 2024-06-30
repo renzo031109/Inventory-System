@@ -65,7 +65,15 @@ Summary
 
         </td>
       </tr>
+
       {% endfor %}
+      
+      <tr>
+        <td colspan="5" ><center><strong>GRAND TOTAL</strong></center></td>
+        <td class="text-right"><strong>{{ total_value | floatformat:2 }}</strong></td>
+        <td></td>
+        <td></td>
+      </tr>
 
     </tbody>
   </table>
